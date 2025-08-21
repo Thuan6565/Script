@@ -118,6 +118,7 @@ button.Position = UDim2.new(0, 20, 0, 20)
 button.Text = "Start Auto Farm"
 button.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
 button.Parent = gui
+button.Draggable = true
 
 button.MouseButton1Click:Connect(function()
 	if not Farming then
