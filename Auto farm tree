@@ -1,0 +1,132 @@
+-- 🌲 Auto Farm Tree Script (luôn chặt cây, không đứng im)
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+local VirtualUser = game:GetService("VirtualUser")
+
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local hrp = character:WaitForChild("HumanoidRootPart")
+local originalCFrame = hrp.CFrame
+
+local Farming = false
+local treesFolder = workspace:WaitForChild("Map"):WaitForChild("Landmarks")
+
+-- 🚫 Noclip
+RunService.Stepped:Connect(function()
+	for _, v in pairs(character:GetDescendants()) do
+		if v:IsA("BasePart") then
+			v.CanCollide = false
+		end
+	end
+end)
+
+-- 🖱️ Auto click loop
+local function autoClickLoop()
+	task.spawn(function()
+		while Farming do
+			VirtualUser:ClickButton1(Vector2.new(0,0))
+			task.wait(0.05)
+		end
+	end)
+end
+
+-- 📍 Tween nhanh sát gốc cây + xoay mặt
+local function tweenTo(tree)
+	if not tree or not tree.Parent then return end
+	local pos
+	if tree:IsA("Model") and tree.PrimaryPart then
+		pos = tree.PrimaryPart.Position
+	elseif tree:IsA("BasePart") then
+		pos = tree.Position
+	end
+	if not pos then return end
+
+	local lookAt = (pos - hrp.Position).Unit
+	local targetPos = pos - lookAt * 4 -- đứng sát mặt gốc
+	local targetCFrame = CFrame.new(targetPos, pos)
+
+	local tween = TweenService:Create(
+		hrp,
+		TweenInfo.new(0.05, Enum.EasingStyle.Linear),
+		{CFrame = targetCFrame}
+	)
+	tween:Play()
+end
+
+-- 🔍 Tìm cây gần nhất còn tồn tại
+local function getNearestTree()
+	local closest, dist = nil, math.huge
+	for _, tree in pairs(treesFolder:GetChildren()) do
+		if tree.Name:find("Small Tree") and tree.Parent then
+			local pos
+			if tree:IsA("Model") and tree.PrimaryPart then
+				pos = tree.PrimaryPart.Position
+			elseif tree:IsA("BasePart") then
+				pos = tree.Position
+			end
+			if pos then
+				local d = (hrp.Position - pos).Magnitude
+				if d < dist then
+					dist = d
+					closest = tree
+				end
+			end
+		end
+	end
+	return closest
+end
+
+-- 🔄 Farm loop (mỗi 9 giây chắc chắn đổi cây)
+local function startFarm()
+	Farming = true
+	autoClickLoop()
+
+	task.spawn(function()
+		while Farming do
+			local tree = getNearestTree()
+			if tree then
+				tweenTo(tree)
+				-- đứng 9 giây
+				for i = 1, 90 do
+					if not Farming then break end
+					if not tree or not tree.Parent then break end -- cây biến mất thì break sớm
+					task.wait(0.1)
+				end
+			else
+				-- nếu không có cây nào, chờ 10s rồi tìm lại
+				for i = 1, 100 do
+					if not Farming then break end
+					task.wait(0.1)
+				end
+			end
+		end
+		-- trả về vị trí cũ khi ngưng
+		hrp.CFrame = originalCFrame
+	end)
+end
+
+local function stopFarm()
+	Farming = false
+end
+
+-- 🟢 GUI Toggle
+local gui = Instance.new("ScreenGui", player.PlayerGui)
+local button = Instance.new("TextButton")
+button.Size = UDim2.new(0, 180, 0, 50)
+button.Position = UDim2.new(0, 20, 0, 20)
+button.Text = "Start Auto Farm"
+button.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+button.Parent = gui
+
+button.MouseButton1Click:Connect(function()
+	if not Farming then
+		button.Text = "Stop Auto Farm"
+		button.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
+		startFarm()
+	else
+		button.Text = "Start Auto Farm"
+		button.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+		stopFarm()
+	end
+end)
