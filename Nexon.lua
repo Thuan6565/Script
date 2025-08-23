@@ -32,6 +32,12 @@ local Tab2 = Window:Tab({
     Icon = "box",
     Locked = false,
 })
+
+local Tab2 = Window:Tab({
+    Title = "Player",
+    Icon = "box",
+    Locked = false,
+})
 --Windows
 Window:Tag({
     Title = "v1.0.0",
@@ -277,7 +283,7 @@ local Button = Tab:Button({
 })
 
 local Button = Tab:Button({
-    Title = "Tween to lost child e",
+    Title = "Tween to lost child 3",
     Desc = "Carry lost child 3 to campire",
     Locked = false,
     Callback = function()
@@ -714,6 +720,12 @@ local AmmoOff = Tab2:Button({
             hrp.CFrame = savedPositionAmmo
         end
     end
+})
+
+local Section = Tab2:Section({ 
+    Title = "Tool & Weapons",
+    TextXAlignment = "Left",
+    TextSize = 17, -- Default Size
 })
 
 -- =======================
