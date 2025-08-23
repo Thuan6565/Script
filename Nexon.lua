@@ -432,7 +432,6 @@ end
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local player = Players.LocalPlayer
 
 -- RemoteFunction
 local requestConsume = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("RequestConsumeItem")
@@ -885,4 +884,5 @@ local Toggle = Tab3:Toggle({
         end
     end
 })
+
 
