@@ -791,3 +791,56 @@ local ToolsOff = Tab2:Button({
 
 })
 
+--Tabs 3 πππ§Ω×√÷√|``$[${${`=$=$✓$=$=$✓÷
+
+local player = game.Players.LocalPlayer
+local char = player.Character or player.CharacterAdded:Wait()
+local hrp = char:WaitForChild("HumanoidRootPart")
+
+-- Giá trị tốc độ mặc định
+local defaultSpeed = 16
+local customSpeed = 70
+local speedEnabled = false
+
+-- Slider để điều chỉnh tốc độ
+local Slider = Tab:Slider({
+    Title = "Player Speed",
+    Step = 1,
+    Value = {
+        Min = 20,
+        Max = 120,
+        Default = 70,
+    },
+    Callback = function(value)
+        customSpeed = value
+        if speedEnabled then
+            -- Nếu Toggle bật, cập nhật tốc độ ngay
+            hrp.AssemblyLinearVelocity = hrp.CFrame.LookVector * customSpeed
+        end
+    end
+})
+
+-- Toggle bật/tắt điều chỉnh tốc độ
+local Toggle = Tab:Toggle({
+    Title = "Enable Speed Control",
+    Desc = "Toggle Description",
+    Icon = "bird",
+    Type = "Toggle",
+    Default = false,
+    Callback = function(state)
+        speedEnabled = state
+        if not state then
+            -- Tắt chế độ: đưa player về tốc độ mặc định
+            hrp.AssemblyLinearVelocity = Vector3.new(0,0,0)
+        end
+    end
+})
+
+-- Cập nhật liên tục tốc độ khi Toggle bật
+game:GetService("RunService").RenderStepped:Connect(function()
+    if speedEnabled and hrp then
+        hrp.AssemblyLinearVelocity = hrp.CFrame.LookVector * customSpeed
+    end
+end)
+
+
