@@ -791,16 +791,19 @@ local ToolsOff = Tab2:Button({
 
 })
 
---Tabs 3 πππ§Ω×√÷√|``$[${${`=$=$✓$=$=$✓÷
+-- Lấy player & humanoid
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
 
--- Giá trị tốc độ mặc định
-local defaultSpeed = 16
-local customSpeed = 70
+-- Biến lưu
 local speedEnabled = false
+local selectedSpeed = 70 -- mặc định từ slider
+local defaultSpeed = 16 -- tốc độ chuẩn Roblox
 
--- Slider để điều chỉnh tốc độ
-local Slider = Tab:Slider({
-    Title = "Player Speed",
+-- Slider chỉnh tốc độ
+local Slider = Tab3:Slider({
+    Title = "WalkSpeed",
     Step = 1,
     Value = {
         Min = 20,
@@ -808,36 +811,26 @@ local Slider = Tab:Slider({
         Default = 70,
     },
     Callback = function(value)
-        customSpeed = value
+        selectedSpeed = value
         if speedEnabled then
-            -- Nếu Toggle bật, cập nhật tốc độ ngay
-            hrp.AssemblyLinearVelocity = hrp.CFrame.LookVector * customSpeed
+            humanoid.WalkSpeed = selectedSpeed
         end
     end
 })
 
--- Toggle bật/tắt điều chỉnh tốc độ
-local Toggle = Tab:Toggle({
-    Title = "Enable Speed Control",
-    Desc = "Toggle Description",
+-- Toggle bật/tắt
+local Toggle = Tab3:Toggle({
+    Title = "Toggle Speed",
+    Desc = "Bật/tắt chế độ chỉnh tốc độ",
     Icon = "bird",
-    Type = "Toggle",
+    Type = "Checkbox",
     Default = false,
     Callback = function(state)
         speedEnabled = state
-        if not state then
-            -- Tắt chế độ: đưa player về tốc độ mặc định
-            hrp.AssemblyLinearVelocity = Vector3.new(0,0,0)
+        if speedEnabled then
+            humanoid.WalkSpeed = selectedSpeed
+        else
+            humanoid.WalkSpeed = defaultSpeed
         end
     end
 })
-
--- Cập nhật liên tục tốc độ khi Toggle bật
-game:GetService("RunService").RenderStepped:Connect(function()
-    if speedEnabled and hrp then
-        hrp.AssemblyLinearVelocity = hrp.CFrame.LookVector * customSpeed
-    end
-end)
-
-
-
