@@ -793,10 +793,6 @@ local ToolsOff = Tab2:Button({
 
 --Tabs 3 πππ§Ω×√÷√|``$[${${`=$=$✓$=$=$✓÷
 
-local player = game.Players.LocalPlayer
-local char = player.Character or player.CharacterAdded:Wait()
-local hrp = char:WaitForChild("HumanoidRootPart")
-
 -- Giá trị tốc độ mặc định
 local defaultSpeed = 16
 local customSpeed = 70
@@ -842,5 +838,6 @@ game:GetService("RunService").RenderStepped:Connect(function()
         hrp.AssemblyLinearVelocity = hrp.CFrame.LookVector * customSpeed
     end
 end)
+
 
 
