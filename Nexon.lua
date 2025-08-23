@@ -33,7 +33,7 @@ local Tab2 = Window:Tab({
     Locked = false,
 })
 
-local Tab2 = Window:Tab({
+local Tab3 = Window:Tab({
     Title = "Player",
     Icon = "box",
     Locked = false,
@@ -788,4 +788,5 @@ local ToolsOff = Tab2:Button({
             hrp.CFrame = savedPositionTools
         end
     end
+
 })
