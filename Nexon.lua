@@ -67,8 +67,8 @@ local angle = 0
 
 -- Toggle trong GUI
 local Toggle = Tab:Toggle({
-    Title = "Auto Day",
-    Desc = "Circle tween on map. Very safe",
+    Title = "Circle Fly",
+    Desc = "Bay vòng quanh map",
     Icon = "star",
     Type = "Toggle",
     Default = false,
@@ -407,7 +407,7 @@ local hrp = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
 if not hrp then return end
 
 -- Tìm lửa trại
-local campfire = workspace.Map.Campground:FindFirstChild("MainFire")  -- hoặc đổi tên nếu trong game khác
+local campfire = Workspace.Map.Campground:FindFirstChild("MainFire")  -- hoặc đổi tên nếu trong game khác
 if not campfire or not campfire.PrimaryPart then
     warn("Không tìm thấy lửa trại!")
     return
@@ -429,7 +429,6 @@ for _, item in ipairs(workspace.Items:GetChildren()) do
 end
     end
 })
-
 
 -- Tabs 2
 
@@ -789,53 +788,4 @@ local ToolsOff = Tab2:Button({
             hrp.CFrame = savedPositionTools
         end
     end
-
 })
-
--- Lấy player & humanoid
-local player = game.Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-local humanoid = character:WaitForChild("Humanoid")
-
--- Biến lưu
-local speedEnabled = false
-local selectedSpeed = 70 -- mặc định từ slider
-local defaultSpeed = 16 -- tốc độ chuẩn Roblox
-
--- Slider chỉnh tốc độ
-local Slider = Tab3:Slider({
-    Title = "WalkSpeed",
-    Step = 1,
-    Value = {
-        Min = 20,
-        Max = 120,
-        Default = 70,
-    },
-    Callback = function(value)
-        selectedSpeed = value
-        if speedEnabled then
-            humanoid.WalkSpeed = selectedSpeed
-        end
-    end
-})
-
--- Toggle bật/tắt
-local Toggle = Tab3:Toggle({
-    Title = "Toggle Speed",
-    Desc = "Bật/tắt chế độ chỉnh tốc độ",
-    Icon = "bird",
-    Type = "Checkbox",
-    Default = false,
-    Callback = function(state)
-        speedEnabled = state
-        if speedEnabled then
-            humanoid.WalkSpeed = selectedSpeed
-        else
-            humanoid.WalkSpeed = defaultSpeed
-        end
-    end
-})
-
-
-
-
