@@ -407,7 +407,7 @@ local hrp = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
 if not hrp then return end
 
 -- Tìm lửa trại
-local campfire = Workspace.Map.Campground:FindFirstChild("MainFire")  -- hoặc đổi tên nếu trong game khác
+local campfire = workspace.Map.Campground:FindFirstChild("MainFire")  -- hoặc đổi tên nếu trong game khác
 if not campfire or not campfire.PrimaryPart then
     warn("Không tìm thấy lửa trại!")
     return
@@ -442,7 +442,7 @@ local hungryBar = player:WaitForChild("PlayerGui"):WaitForChild("Interface")
 
 -- Hàm ăn thức ăn
 local function eatFood()
-    for _, item in ipairs(workspace.Item:GetChildren()) do
+    for _, item in ipairs(workspace.Items:GetChildren()) do
         if item.Name == "Cooked Morsel" then
             requestConsume:InvokeServer(item)
             print("Đã ăn 1 Cooked Morsel")
@@ -884,5 +884,6 @@ local Toggle = Tab3:Toggle({
         end
     end
 })
+
 
 
