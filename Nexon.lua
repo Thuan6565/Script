@@ -399,7 +399,7 @@ local Section = Tab:Section({
 
 local Button = Tab:Button({
     Title = "Eat",
-    Desc = "Eat if you have food",
+    Desc = " eat Cooked Morsel when hunger < 30%",
     Locked = false,
     Callback = function()
         local Players = game:GetService("Players")
@@ -424,18 +424,14 @@ local Button = Tab:Button({
             end
         end
 
-        -- Tránh gắn nhiều lần event nếu bấm nút nhiều lần
-        if not _G.AutoEatConnected then
-            hungryBar:GetPropertyChangedSignal("Size"):Connect(function()
-                if hungryBar.Size.X.Scale < 0.3 then -- đói < 30%
-                    eatFood()
-                end
-            end)
-            _G.AutoEatConnected = true
-            print("Auto Eat đã bật.")
-        else
-            print("Auto Eat đã chạy rồi.")
-        end
+        -- Theo dõi thanh đói
+        hungryBar:GetPropertyChangedSignal("Size"):Connect(function()
+            if hungryBar.Size.X.Scale < 0.9 then  -- đói < 30%
+                eatFood()
+            end
+        end)
+
+        print("Auto Eat đã bật")
     end
 })
 
