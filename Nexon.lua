@@ -33,6 +33,7 @@ local Tab2 = Window:Tab({
     Locked = false,
 })
 
+
 local Tab3 = Window:Tab({
     Title = "Player",
     Icon = "box",
@@ -67,8 +68,8 @@ local angle = 0
 
 -- Toggle trong GUI
 local Toggle = Tab:Toggle({
-    Title = "Circle Fly",
-    Desc = "Bay vòng quanh map",
+    Title = "Auto Days",
+    Desc = "Circle Tween map",
     Icon = "star",
     Type = "Toggle",
     Default = false,
@@ -283,7 +284,7 @@ local Button = Tab:Button({
 })
 
 local Button = Tab:Button({
-    Title = "Tween to lost child 3",
+    Title = "Tween to lost child e",
     Desc = "Carry lost child 3 to campire",
     Locked = false,
     Callback = function()
@@ -394,6 +395,48 @@ local Section = Tab:Section({
     Title = "Cook & Eat",
     TextXAlignment = "Left",
     TextSize = 17, -- Default Size
+})
+
+local Button = Tab:Button({
+    Title = "Eat",
+    Desc = "Eat if you have food",
+    Locked = false,
+    Callback = function()
+        local Players = game:GetService("Players")
+        local ReplicatedStorage = game:GetService("ReplicatedStorage")
+        local player = Players.LocalPlayer
+
+        -- RemoteFunction
+        local requestConsume = ReplicatedStorage.RemoteEvents:WaitForChild("RequestConsumeItem")
+
+        -- Thanh đói
+        local hungryBar = player:WaitForChild("PlayerGui"):WaitForChild("Interface")
+            :WaitForChild("StatBars"):WaitForChild("HungerBar"):WaitForChild("Bar")
+
+        -- Hàm ăn thức ăn
+        local function eatFood()
+            for _, item in ipairs(workspace.Items:GetChildren()) do
+                if item.Name == "Cooked Morsel" then
+                    requestConsume:InvokeServer(item)
+                    print("Đã ăn 1 Cooked Morsel")
+                    break
+                end
+            end
+        end
+
+        -- Tránh gắn nhiều lần event nếu bấm nút nhiều lần
+        if not _G.AutoEatConnected then
+            hungryBar:GetPropertyChangedSignal("Size"):Connect(function()
+                if hungryBar.Size.X.Scale < 0.3 then -- đói < 30%
+                    eatFood()
+                end
+            end)
+            _G.AutoEatConnected = true
+            print("Auto Eat đã bật.")
+        else
+            print("Auto Eat đã chạy rồi.")
+        end
+    end
 })
 
 local Button = Tab:Button({
@@ -722,12 +765,6 @@ local AmmoOff = Tab2:Button({
     end
 })
 
-local Section = Tab2:Section({ 
-    Title = "Tool & Weapons",
-    TextXAlignment = "Left",
-    TextSize = 17, -- Default Size
-})
-
 -- =======================
 -- Tools & Weapons
 -- =======================
@@ -788,4 +825,61 @@ local ToolsOff = Tab2:Button({
             hrp.CFrame = savedPositionTools
         end
     end
+})
+
+
+local Section = Tab:Section({ 
+    Title = "Speed",
+    TextXAlignment = "Left",
+    TextSize = 17, -- Default Size
+})
+
+-- Lấy player & humanoid
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+
+-- Biến lưu
+local speedEnabled = false
+local selectedSpeed = 70 -- mặc định từ slider
+local defaultSpeed = 16 -- tốc độ chuẩn Roblox
+
+-- Slider chỉnh tốc độ
+local Slider = Tab3:Slider({
+    Title = "WalkSpeed",
+    Step = 1,
+    Value = {
+        Min = 20,
+        Max = 120,
+        Default = 70,
+    },
+    Callback = function(value)
+        selectedSpeed = value
+        if speedEnabled then
+            humanoid.WalkSpeed = selectedSpeed
+        end
+    end
+})
+
+-- Toggle bật/tắt
+local Toggle = Tab3:Toggle({
+    Title = "Toggle Speed",
+    Desc = "On/Off Speed",
+    Icon = "bird",
+    Type = "Toggle",
+    Default = false,
+    Callback = function(state)
+        speedEnabled = state
+        if speedEnabled then
+            humanoid.WalkSpeed = selectedSpeed
+        else
+            humanoid.WalkSpeed = defaultSpeed
+        end
+    end
+})
+
+local Section = Tab:Section({ 
+    Title = "Others",
+    TextXAlignment = "Left",
+    TextSize = 17, -- Default Size
 })
