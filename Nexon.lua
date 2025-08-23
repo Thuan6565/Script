@@ -67,8 +67,8 @@ local angle = 0
 
 -- Toggle trong GUI
 local Toggle = Tab:Toggle({
-    Title = "Circle Fly",
-    Desc = "Bay vòng quanh map",
+    Title = "Auto Day",
+    Desc = "Circle tween on map. Very safe",
     Icon = "star",
     Type = "Toggle",
     Default = false,
@@ -790,3 +790,4 @@ local ToolsOff = Tab2:Button({
     end
 
 })
+
