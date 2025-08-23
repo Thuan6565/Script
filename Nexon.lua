@@ -430,55 +430,6 @@ end
     end
 })
 
-local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
--- RemoteFunction
-local requestConsume = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("RequestConsumeItem")
-
--- Thanh đói
-local hungryBar = player:WaitForChild("PlayerGui"):WaitForChild("Interface")
-    :WaitForChild("StatBars"):WaitForChild("HungryBar"):WaitForChild("Bar")
-
--- Hàm ăn thức ăn
-local function eatFood()
-    for _, item in ipairs(workspace.Items:GetChildren()) do
-        if item.Name == "Cooked Morsel" then
-            requestConsume:InvokeServer(item)
-            print("Đã ăn 1 Cooked Morsel")
-            break
-        end
-    end
-end
-
--- Toggle UI
-local Toggle = Tab:Toggle({
-    Title = "Auto Eat",
-    Desc = "Auto Eat if HungerBar < 50%",
-    Icon = "bird",
-    Type = "Toggle",
-    Default = false,
-    Callback = function(state) 
-        if state then
-            print("Auto Eat: ON")
-            _G.AutoEat = true
-
-            task.spawn(function()
-                while _G.AutoEat do
-                    if hungryBar.Size.X.Scale < 0.3 then
-                        eatFood()
-                        task.wait(2) -- delay tránh spam quá nhanh
-                    end
-                    task.wait(1)
-                end
-            end)
-
-        else
-            print("Auto Eat: OFF")
-            _G.AutoEat = false
-        end
-    end
-})
 
 -- Tabs 2
 
@@ -884,6 +835,7 @@ local Toggle = Tab3:Toggle({
         end
     end
 })
+
 
 
 
