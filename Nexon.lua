@@ -39,6 +39,12 @@ local Tab3 = Window:Tab({
     Icon = "box",
     Locked = false,
 })
+
+local Tab4 = Window:Tab({
+    Title = "Combat",
+    Icon = "box",
+    Locked = false,
+})
 --Windows
 Window:Tag({
     Title = "v1.0.0",
@@ -846,7 +852,7 @@ local Slider = Tab3:Slider({
     Step = 1,
     Value = {
         Min = 20,
-        Max = 120,
+        Max = 1200,
         Default = 70,
     },
     Callback = function(value)
@@ -874,8 +880,74 @@ local Toggle = Tab3:Toggle({
     end
 })
 
-local Section = Tab:Section({ 
+local Section = Tab3:Section({ 
     Title = "Others",
     TextXAlignment = "Left",
     TextSize = 17, -- Default Size
+})
+
+local Section = Tab4:Section({ 
+    Title = "Kill Aura",
+    TextXAlignment = "Left",
+    TextSize = 17, -- Default Size
+})
+
+local ActiveKillAura = false
+local DistanceForKillAura = 15 -- chỉnh khoảng cách mặc định
+
+-- Slider chỉnh khoảng cách
+local Slider = Tab3:Slider({
+    Title = "Distance",
+    Step = 1,
+    Value = {
+        Min = 20,
+        Max = 1200,
+        Default = 70,
+    },
+    Callback = function(value)
+        DistanceForKillAura = value
+    end
+})
+
+-- Hàm Kill Aura
+local function runKillAura()
+    task.spawn(function()
+        while ActiveKillAura do
+            local character = player.Character or player.CharacterAdded:Wait()
+            local hrp = character:WaitForChild("HumanoidRootPart")
+            local weapon = player.Inventory:FindFirstChild("Old Axe") 
+                or player.Inventory:FindFirstChild("Good Axe") 
+                or player.Inventory:FindFirstChild("Strong Axe") 
+                or player.Inventory:FindFirstChild("Chainsaw")
+
+            if weapon then
+                for _, bunny in pairs(workspace.Characters:GetChildren()) do
+                    if bunny:IsA("Model") and bunny.PrimaryPart then
+                        local distance = (bunny.PrimaryPart.Position - hrp.Position).Magnitude
+                        if distance <= DistanceForKillAura then
+                            game:GetService("ReplicatedStorage").RemoteEvents.ToolDamageObject:InvokeServer(
+                                bunny, weapon, 999, hrp.CFrame
+                            )
+                        end
+                    end
+                end
+            end
+            task.wait(0.1)
+        end
+    end)
+end
+
+-- Toggle bật/tắt
+local Toggle = Tab3:Toggle({
+    Title = "Kill Aura",
+    Desc = "p",
+    Icon = "bird",
+    Type = "Toggle",
+    Default = false,
+    Callback = function(state)
+        ActiveKillAura = state
+        if ActiveKillAura then
+            runKillAura()
+        end
+    end
 })
