@@ -892,8 +892,9 @@ local Section = Tab4:Section({
     TextSize = 17, -- Default Size
 })
 
+local player = game.Players.LocalPlayer
 local ActiveKillAura = false
-local DistanceForKillAura = 15 -- chỉnh khoảng cách mặc định
+local DistanceForKillAura = 70 -- default
 
 -- Slider chỉnh khoảng cách
 local Slider = Tab3:Slider({
@@ -937,10 +938,10 @@ local function runKillAura()
     end)
 end
 
--- Toggle bật/tắt
+-- Toggle Kill Aura
 local Toggle = Tab3:Toggle({
     Title = "Kill Aura",
-    Desc = "p",
+    Desc = "",
     Icon = "bird",
     Type = "Toggle",
     Default = false,
