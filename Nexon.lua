@@ -1036,6 +1036,70 @@ local KillAuraToggle = Tab4:Toggle({
         end
     end
 })
+
+local Button = Tab4:Button({
+    Title = "Kill aura gui",
+    Desc = "",
+    Locked = false,
+    Callback = function()
+        -- Tạo GUI cơ bản
+local player = game.Players.LocalPlayer
+local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+local button = Instance.new("TextButton", gui)
+
+button.Size = UDim2.new(0, 120, 0, 50)
+button.Position = UDim2.new(0, 20, 0, 200)
+button.Text = "Kill Aura: OFF"
+button.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+button.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+-- Biến toggle
+local ActiveKillAura = false
+local DistanceForKillAura = 15000 -- chỉnh khoảng cách ở đây
+
+-- Hàm chính
+local function runKillAura()
+    task.spawn(function()
+        while ActiveKillAura do
+            local character = player.Character or player.CharacterAdded:Wait()
+            local hrp = character:WaitForChild("HumanoidRootPart")
+            local weapon = player.Inventory:FindFirstChild("Old Axe") 
+                or player.Inventory:FindFirstChild("Good Axe") 
+                or player.Inventory:FindFirstChild("Strong Axe") 
+                or player.Inventory:FindFirstChild("Chainsaw")
+
+            if weapon then
+                for _, bunny in pairs(workspace.Characters:GetChildren()) do
+                    if bunny:IsA("Model") and bunny.PrimaryPart then
+                        local distance = (bunny.PrimaryPart.Position - hrp.Position).Magnitude
+                        if distance <= DistanceForKillAura then
+                            game:GetService("ReplicatedStorage").RemoteEvents.ToolDamageObject:InvokeServer(
+                                bunny, weapon, 999, hrp.CFrame
+                            )
+                        end
+                    end
+                end
+            end
+            task.wait(0.1)
+        end
+    end)
+end
+
+-- Nút toggle
+button.MouseButton1Click:Connect(function()
+    ActiveKillAura = not ActiveKillAura
+    if ActiveKillAura then
+        button.Text = "Kill Aura: ON"
+        button.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
+        runKillAura()
+    else
+        button.Text = "Kill Aura: OFF"
+        button.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
+    end
+end)
+    end
+})
+
 local Section = Tab4:Section({ 
     Title = "Tree Aura",
     TextXAlignment = "Left",
@@ -1108,6 +1172,7 @@ local AutoChopTreeToggle = Tab4:Toggle({
         end
     end
 })
+
 
 
 
