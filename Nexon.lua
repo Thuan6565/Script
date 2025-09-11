@@ -903,7 +903,7 @@ local DistanceForKillAura = 70
 local KillAuraThread
 
 -- Slider chỉnh khoảng cách
-local Slider = Tab3:Slider({
+local Slider = Tab4:Slider({
     Title = "Distance",
     Step = 1,
     Value = {
@@ -948,9 +948,9 @@ local function runKillAura()
 end
 
 -- Toggle Kill Aura (hoạt động như GUI thủ công)
-local Toggle = Tab3:Toggle({
+local Toggle = Tab4:Toggle({
     Title = "Kill Aura",
-    Desc = "Tự động đánh mob",
+    Desc = "kill mob",
     Icon = "bird",
     Type = "Toggle",
     Default = false,
@@ -965,4 +965,94 @@ local Toggle = Tab3:Toggle({
         end
     end
 })
+
+local Section = Tab4:Section({ 
+    Title = "Tree Aura",
+    TextXAlignment = "Left",
+    TextSize = 17, -- Default Size
+})
+
+local player = game.Players.LocalPlayer
+local ActiveAutoChopTree = false
+local DistanceForAutoChopTree = 250
+local AutoChopTreeThread
+
+-- Slider chỉnh khoảng cách
+local PlayerDistanceAutoChopTreeSlider = Tab4:Slider({
+    Title = "Distance For Auto Chop Tree (<=250 if strong axe/chainsaw)",
+    Step = 1,
+    Value = {
+        Min = 0,
+        Max = 1600,
+        Default = 250,
+    },
+    Callback = function(value)
+        DistanceForAutoChopTree = tonumber(value) or 250
+        print("Auto Chop Distance:", DistanceForAutoChopTree)
+    end
+})
+
+-- Hàm chính Auto Chop Tree
+local function runAutoChopTree()
+    if AutoChopTreeThread then return end
+    AutoChopTreeThread = task.spawn(function()
+        while ActiveAutoChopTree do
+            local character = player.Character or player.CharacterAdded:Wait()
+            local hrp = character:WaitForChild("HumanoidRootPart")
+            local weapon = player.Inventory:FindFirstChild("Old Axe") 
+                or player.Inventory:FindFirstChild("Good Axe") 
+                or player.Inventory:FindFirstChild("Strong Axe") 
+                or player.Inventory:FindFirstChild("Chainsaw")
+
+            if weapon then
+                -- Foliage
+                for _, tree in pairs(workspace.Map.Foliage:GetChildren()) do
+                    if tree:IsA("Model") and (tree.Name == "Small Tree" or tree.Name == "TreeBig1" or tree.Name == "TreeBig2") and tree.PrimaryPart then
+                        local distance = (tree.PrimaryPart.Position - hrp.Position).Magnitude
+                        if distance <= DistanceForAutoChopTree then
+                            game:GetService("ReplicatedStorage").RemoteEvents.ToolDamageObject:InvokeServer(
+                                tree, weapon, 999, hrp.CFrame
+                            )
+                        end
+                    end
+                end
+
+                -- Landmarks
+                for _, tree in pairs(workspace.Map.Landmarks:GetChildren()) do
+                    if tree:IsA("Model") and (tree.Name == "Small Tree" or tree.Name == "TreeBig1" or tree.Name == "TreeBig2") and tree.PrimaryPart then
+                        local distance = (tree.PrimaryPart.Position - hrp.Position).Magnitude
+                        if distance <= DistanceForAutoChopTree then
+                            game:GetService("ReplicatedStorage").RemoteEvents.ToolDamageObject:InvokeServer(
+                                tree, weapon, 999, hrp.CFrame
+                            )
+                        end
+                    end
+                end
+            end
+
+            task.wait(0.1)
+        end
+        AutoChopTreeThread = nil
+    end)
+end
+
+-- Toggle Auto Chop Tree
+local AutoChopTreeToggle = Tab4:Toggle({
+    Title = "Auto Chop Tree",
+    Desc = "Chặt cây tự động",
+    Icon = "tree",
+    Type = "Toggle",
+    Default = false,
+    Callback = function(state)
+        if state then
+            ActiveAutoChopTree = true
+            runAutoChopTree()
+            print("Auto Chop Tree: ON")
+        else
+            ActiveAutoChopTree = false
+            print("Auto Chop Tree: OFF")
+        end
+    end
+})
+
 
