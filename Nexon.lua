@@ -974,7 +974,7 @@ local Section = Tab4:Section({
 
 local player = game.Players.LocalPlayer
 local ActiveAutoChopTree = false
-local DistanceForAutoChopTree = 100
+local DistanceForAutoChopTree = 1000
 
 -- Hàm chính
 local function runAutoChopTree()
@@ -1016,7 +1016,7 @@ local AutoChopTreeSlider = Tab4:Slider({
     Value = {
         Min = 20,
         Max = 1000,
-        Default = 100,
+        Default = 1000,
     },
     Callback = function(value)
         DistanceForAutoChopTree = tonumber(value) or 1000
@@ -1038,4 +1038,5 @@ local AutoChopTreeToggle = Tab4:Toggle({
         end
     end
 })
+
 
