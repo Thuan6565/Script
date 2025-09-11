@@ -1178,7 +1178,7 @@ local function addHighlight(item)
         hl.FillTransparency = 0.5
         hl.OutlineTransparency = 0
         hl.Adornee = item
-        hl.Parent = item
+        hl.Parent = item.PrimaryPart
     end
 end
 
@@ -1198,7 +1198,7 @@ local function addBillboard(item)
         text.Size = UDim2.new(1, 0, 1, 0)
         text.BackgroundTransparency = 1
         text.Text = item.Name
-        text.TextColor3 = Color3.fromRGB(255, 215, 0)
+        text.TextColor3 = Color3.fromRGB(255, 255, 0)
         text.TextStrokeTransparency = 0
         text.TextScaled = true
         text.Font = Enum.Font.SourceSansBold
@@ -1248,13 +1248,14 @@ end
 -- Toggle trong library
 local Toggle = Tab5:Toggle({
     Title = "Fuel ESP",
-    Description = "Highlight + tên cho itemsFuel",
+    Description = "",
     Default = false,
     Callback = function(state)
         setFuelESP(state)
         print("Fuel ESP:", state)
     end
 })
+
 
 
 
