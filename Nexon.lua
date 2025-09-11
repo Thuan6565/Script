@@ -892,11 +892,11 @@ local Section = Tab4:Section({
     TextSize = 17, -- Default Size
 })
 
-local player = game.Players.LocalPlayer
 local ActiveKillAura = false
-local DistanceForKillAura = 70 -- default
+local DistanceForKillAura = 70
+local KillAuraThread
 
--- Slider chỉnh khoảng cách
+-- Slider
 local Slider = Tab3:Slider({
     Title = "Distance",
     Step = 1,
@@ -910,10 +910,13 @@ local Slider = Tab3:Slider({
     end
 })
 
--- Hàm Kill Aura
+-- Hàm Kill Aura (chạy nền duy nhất)
 local function runKillAura()
-    task.spawn(function()
-        while ActiveKillAura do
+    if KillAuraThread then return end -- đã có thread thì không tạo thêm
+    KillAuraThread = task.spawn(function()
+        while task.wait(0.1) do
+            if not ActiveKillAura then break end
+
             local character = player.Character or player.CharacterAdded:Wait()
             local hrp = character:WaitForChild("HumanoidRootPart")
             local weapon = player.Inventory:FindFirstChild("Old Axe") 
@@ -933,15 +936,15 @@ local function runKillAura()
                     end
                 end
             end
-            task.wait(0.1)
         end
+        KillAuraThread = nil -- vòng lặp kết thúc thì reset
     end)
 end
 
--- Toggle Kill Aura
+-- Toggle
 local Toggle = Tab3:Toggle({
     Title = "Kill Aura",
-    Desc = "",
+    Desc = "p",
     Icon = "bird",
     Type = "Toggle",
     Default = false,
