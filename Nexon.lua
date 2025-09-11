@@ -1032,17 +1032,12 @@ end
 -- Slider điều chỉnh khoảng cách
 
 local Slider = Tab4:Slider({
-    Title = "Distance",
-    
-    -- To make float number supported, 
-    -- make the Step a float number.
-    -- example: Step = 0.1
+    Title = "Khoảng cách Kill Aura",
     Step = 1,
-    
     Value = {
         Min = 20,
-        Max = 150,
-        Default = 70,
+        Max = 1000,
+        Default = 100,
     },
     Callback = function(value)
         DistanceForKillAura = tonumber(value) or 100
@@ -1138,6 +1133,7 @@ local AutoChopTreeToggle = Tab4:Toggle({
         end
     end
 })
+
 
 
 
