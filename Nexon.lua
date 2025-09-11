@@ -485,11 +485,13 @@ end
 
 -- Tabs 2
 
-local selectedItem = "Morsel" -- mặc định
+_G.BringItem = false
+local savedPositionItem
+local selectedItem = "Morsel"
 
--- Dropdown chọn item
-local Dropdown = Tab:Dropdown({
-    Title = "Dropdown (Single)",
+-- Dropdown
+local Dropdown = Tab2:Dropdown({
+    Title = "Select Item",
     Values = { 
         "Morsel", "Steak", "Carrot", "Berry", 
         "Chain", "Metal Chain", "Log", "Coal", 
@@ -499,38 +501,31 @@ local Dropdown = Tab:Dropdown({
     Value = "Morsel",
     Callback = function(option) 
         selectedItem = option
-        print("Item selected: " .. option) 
+        print("Selected: " .. option)
     end
 })
 
-_G.BringItem = false
-local savedPositionFuel
-
 -- Bring ON
-local FuelOn = Tab2:Button({
-    Title = "Bring",
+local BringOn = Tab2:Button({
+    Title = "Bring Item",
     Desc = "Bring selected item",
     Locked = false,
     Callback = function()
         if _G.BringItem then return end
         _G.BringItem = true
-        savedPositionFuel = hrp.CFrame
+        savedPositionItem = hrp.CFrame
 
         task.spawn(function()
             while _G.BringItem do
                 for _, item in ipairs(workspace.Items:GetChildren()) do
                     if not _G.BringItem then break end
                     if item:IsA("Model") and item.PrimaryPart and item.Name == selectedItem then
-                        -- teleport HRP tới item
                         hrp.CFrame = item.PrimaryPart.CFrame + Vector3.new(0,3,0)
                         task.wait(0.2)
-
                         requestDrag:FireServer(item)
                         task.wait(0.1)
-
-                        item:PivotTo(savedPositionFuel * CFrame.new(0,3,0))
+                        item:PivotTo(savedPositionItem * CFrame.new(0,3,0))
                         task.wait(0.1)
-
                         stopDrag:FireServer(item)
                         task.wait(0.2)
                     end
@@ -542,14 +537,14 @@ local FuelOn = Tab2:Button({
 })
 
 -- Bring OFF
-local FuelOff = Tab2:Button({
-    Title = "Stop",
-    Desc = "Stop bring",
+local BringOff = Tab2:Button({
+    Title = "Stop Bring",
+    Desc = "Stop bring item",
     Locked = false,
     Callback = function()
         _G.BringItem = false
-        if savedPositionFuel then
-            hrp.CFrame = savedPositionFuel
+        if savedPositionItem then
+            hrp.CFrame = savedPositionItem
         end
     end
 })
@@ -1113,6 +1108,7 @@ local AutoChopTreeToggle = Tab4:Toggle({
         end
     end
 })
+
 
 
 
