@@ -892,34 +892,28 @@ local Section = Tab4:Section({
     TextSize = 17, -- Default Size
 })
 
-local ActiveKillAura = false
-local DistanceForKillAura = 70
-local KillAuraThread
-
--- Slider
 local player = game.Players.LocalPlayer
 local ActiveKillAura = false
-local DistanceForKillAura = 70
+local DistanceForKillAura = 100
 local KillAuraThread
 
 -- Slider chỉnh khoảng cách
-local Slider = Tab4:Slider({
-    Title = "Distance",
+local KillAuraSlider = Tab3:Slider({
+    Title = "Kill Aura Distance",
     Step = 1,
     Value = {
         Min = 20,
-        Max = 1200,
-        Default = 70,
+        Max = 1000,
+        Default = 1000,
     },
     Callback = function(value)
-       DistanceForKillAura = tonumber(value)
-       print("Distance set to:", DistanceForKillAura)
+        DistanceForKillAura = tonumber(value) or 100
     end
 })
 
--- Hàm Kill Aura
+-- Hàm chính
 local function runKillAura()
-    if KillAuraThread then return end -- tránh tạo nhiều thread
+    if KillAuraThread then return end
     KillAuraThread = task.spawn(function()
         while ActiveKillAura do
             local character = player.Character or player.CharacterAdded:Wait()
@@ -941,31 +935,28 @@ local function runKillAura()
                     end
                 end
             end
-            task.wait(0.1)
+            task.wait(0.1) -- 0.05 nếu muốn nhanh hơn
         end
         KillAuraThread = nil
     end)
 end
 
--- Toggle Kill Aura (hoạt động như GUI thủ công)
-local Toggle = Tab4:Toggle({
+-- Toggle
+local KillAuraToggle = Tab3:Toggle({
     Title = "Kill Aura",
-    Desc = "kill mob",
-    Icon = "bird",
+    Desc = "Tự động đánh mob xung quanh",
+    Icon = "sword",
     Type = "Toggle",
     Default = false,
     Callback = function(state)
-        if state then
-            ActiveKillAura = true
+        ActiveKillAura = state
+        if ActiveKillAura then
             runKillAura()
-            print("Kill Aura: ON") -- debug
         else
-            ActiveKillAura = false
-            print("Kill Aura: OFF") -- debug
+            print("Kill Aura OFF")
         end
     end
 })
-
 local Section = Tab4:Section({ 
     Title = "Tree Aura",
     TextXAlignment = "Left",
@@ -1038,5 +1029,6 @@ local AutoChopTreeToggle = Tab4:Toggle({
         end
     end
 })
+
 
 
