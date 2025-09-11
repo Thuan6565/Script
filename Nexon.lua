@@ -975,91 +975,32 @@ local player = game.Players.LocalPlayer
 local ActiveKillAura = false
 local DistanceForKillAura = 100
 local KillAuraThread
+local mobs = {}
 
--- Slider chỉnh khoảng cách
-local KillAuraSlider = Tab4:Slider({
-    Title = "Kill Aura Distance",
-    Step = 1,
-    Value = {
-        Min = 20,
-        Max = 1500,
-        Default = 1000,
-    },
-    Callback = function(value)
-        DistanceForKillAura = tonumber(value) or 100
+-- hàm quét mob
+local function scanMobs()
+    local newList = {}
+    for _, mob in pairs(workspace.Characters:GetChildren()) do
+        if mob:IsA("Model") and mob.PrimaryPart then
+            table.insert(newList, mob)
+        end
     end
-})
+    mobs = newList
+end
 
--- Hàm chính
+-- Kill Aura chạy nền
 local function runKillAura()
     if KillAuraThread then return end
     KillAuraThread = task.spawn(function()
-        while ActiveKillAura do
-            local character = player.Character or player.CharacterAdded:Wait()
-            local hrp = character:WaitForChild("HumanoidRootPart")
-            local weapon = player.Inventory:FindFirstChild("Old Axe") 
-                or player.Inventory:FindFirstChild("Good Axe") 
-                or player.Inventory:FindFirstChild("Strong Axe") 
-                or player.Inventory:FindFirstChild("Chainsaw")
-
-            if weapon then
-                for _, bunny in pairs(workspace.Characters:GetChildren()) do
-                    if bunny:IsA("Model") and bunny.PrimaryPart then
-                        local distance = (bunny.PrimaryPart.Position - hrp.Position).Magnitude
-                        if distance <= DistanceForKillAura then
-                            game:GetService("ReplicatedStorage").RemoteEvents.ToolDamageObject:InvokeServer(
-                                bunny, weapon, 999, hrp.CFrame
-                            )
-                        end
-                    end
-                end
+        -- quét lại mob mỗi 10 giây
+        task.spawn(function()
+            while ActiveKillAura do
+                scanMobs()
+                task.wait(10)
             end
-            task.wait(0.1) -- 0.05 nếu muốn nhanh hơn
-        end
-        KillAuraThread = nil
-    end)
-end
+        end)
 
--- Toggle
-local KillAuraToggle = Tab4:Toggle({
-    Title = "Kill Aura",
-    Desc = "Tự động đánh mob xung quanh",
-    Icon = "sword",
-    Type = "Toggle",
-    Default = false,
-    Callback = function(state)
-        ActiveKillAura = state
-        if ActiveKillAura then
-            runKillAura()
-        else
-            print("Kill Aura OFF")
-        end
-    end
-})
-
-local Button = Tab4:Button({
-    Title = "Kill aura gui",
-    Desc = "",
-    Locked = false,
-    Callback = function()
-        -- Tạo GUI cơ bản
-local player = game.Players.LocalPlayer
-local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
-local button = Instance.new("TextButton", gui)
-
-button.Size = UDim2.new(0, 120, 0, 50)
-button.Position = UDim2.new(0, 20, 0, 200)
-button.Text = "Kill Aura: OFF"
-button.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-button.TextColor3 = Color3.fromRGB(255, 255, 255)
-
--- Biến toggle
-local ActiveKillAura = false
-local DistanceForKillAura = 15000 -- chỉnh khoảng cách ở đây
-
--- Hàm chính
-local function runKillAura()
-    task.spawn(function()
+        -- vòng lặp đánh mob
         while ActiveKillAura do
             local character = player.Character or player.CharacterAdded:Wait()
             local hrp = character:WaitForChild("HumanoidRootPart")
@@ -1069,12 +1010,12 @@ local function runKillAura()
                 or player.Inventory:FindFirstChild("Chainsaw")
 
             if weapon then
-                for _, bunny in pairs(workspace.Characters:GetChildren()) do
-                    if bunny:IsA("Model") and bunny.PrimaryPart then
-                        local distance = (bunny.PrimaryPart.Position - hrp.Position).Magnitude
+                for _, mob in ipairs(mobs) do
+                    if mob and mob.Parent and mob.PrimaryPart then
+                        local distance = (mob.PrimaryPart.Position - hrp.Position).Magnitude
                         if distance <= DistanceForKillAura then
                             game:GetService("ReplicatedStorage").RemoteEvents.ToolDamageObject:InvokeServer(
-                                bunny, weapon, 999, hrp.CFrame
+                                mob, weapon, 999, hrp.CFrame
                             )
                         end
                     end
@@ -1082,21 +1023,35 @@ local function runKillAura()
             end
             task.wait(0.1)
         end
+        KillAuraThread = nil
     end)
 end
 
--- Nút toggle
-button.MouseButton1Click:Connect(function()
-    ActiveKillAura = not ActiveKillAura
-    if ActiveKillAura then
-        button.Text = "Kill Aura: ON"
-        button.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
-        runKillAura()
-    else
-        button.Text = "Kill Aura: OFF"
-        button.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
+-- Slider chỉnh khoảng cách
+local KillAuraSlider = Ta4:Slider({
+    Title = "Kill Aura Distance",
+    Step = 1,
+    Value = {Min = 20, Max = 1000, Default = 100},
+    Callback = function(val)
+        DistanceForKillAura = tonumber(val) or 100
     end
-end)
+})
+
+-- Toggle bật/tắt Kill Aura
+local KillAuraToggle = Tab4:Toggle({
+    Title = "Kill Aura",
+    Desc = "Tự động đánh mob",
+    Icon = "sword",
+    Type = "Toggle",
+    Default = false,
+    Callback = function(state)
+        ActiveKillAura = state
+        if ActiveKillAura then
+            scanMobs()
+            runKillAura()
+        else
+            print("Kill Aura OFF")
+        end
     end
 })
 
@@ -1172,6 +1127,7 @@ local AutoChopTreeToggle = Tab4:Toggle({
         end
     end
 })
+
 
 
 
