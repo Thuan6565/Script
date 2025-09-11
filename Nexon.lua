@@ -22,7 +22,7 @@ local Window = WindUI:CreateWindow({
 
     User = {
         Enabled = true,
-        Anonymous = true,
+        Anonymous = false,
         Callback = function()
             print("clicked")
         end,
@@ -1030,13 +1030,20 @@ local function runKillAura()
 end
 
 -- Slider điều chỉnh khoảng cách
+
 local Slider = Tab4:Slider({
-    Title = "Khoảng cách Kill Aura",
-    Description = "Điều chỉnh phạm vi",
-    Min = 20,
-    Max = 1000,
-    Default = 100,
+    Title = "Distance",
+    
+    -- To make float number supported, 
+    -- make the Step a float number.
+    -- example: Step = 0.1
     Step = 1,
+    
+    Value = {
+        Min = 20,
+        Max = 150,
+        Default = 70,
+    },
     Callback = function(value)
         DistanceForKillAura = tonumber(value) or 100
         print("Distance set to:", DistanceForKillAura)
@@ -1131,6 +1138,7 @@ local AutoChopTreeToggle = Tab4:Toggle({
         end
     end
 })
+
 
 
 
