@@ -975,27 +975,10 @@ local Section = Tab4:Section({
 local player = game.Players.LocalPlayer
 local ActiveAutoChopTree = false
 local DistanceForAutoChopTree = 100
-local AutoChopTreeThread
-
--- Slider chỉnh khoảng cách
-local AutoChopTreeSlider = Tab4:Slider({
-    Title = "Distance For Auto Chop Tree",
-    Step = 1,
-    Value = {
-        Min = 20,
-        Max = 1000,
-        Default = 100,
-    },
-    Callback = function(value)
-        DistanceForAutoChopTree = tonumber(value) or 100
-        print("Auto Chop Distance:", DistanceForAutoChopTree)
-    end
-})
 
 -- Hàm chính
 local function runAutoChopTree()
-    if AutoChopTreeThread then return end
-    AutoChopTreeThread = task.spawn(function()
+    task.spawn(function()
         while ActiveAutoChopTree do
             local character = player.Character or player.CharacterAdded:Wait()
             local hrp = character:WaitForChild("HumanoidRootPart")
@@ -1023,14 +1006,27 @@ local function runAutoChopTree()
             end
             task.wait(0.1)
         end
-        AutoChopTreeThread = nil
     end)
 end
 
--- Toggle bật/tắt
-local AutoChopTreeToggle = Tab4:Toggle({
+-- Slider trong library
+local AutoChopTreeSlider = Tab3:Slider({
+    Title = "Distance For Auto Chop Tree",
+    Step = 1,
+    Value = {
+        Min = 20,
+        Max = 1000,
+        Default = 100,
+    },
+    Callback = function(value)
+        DistanceForAutoChopTree = tonumber(value) or 100
+    end
+})
+
+-- Toggle trong library
+local AutoChopTreeToggle = Tab3:Toggle({
     Title = "Auto Chop Tree",
-    Desc = "Tree aura",
+    Desc = "Tự động chặt cây",
     Icon = "tree",
     Type = "Toggle",
     Default = false,
@@ -1038,9 +1034,6 @@ local AutoChopTreeToggle = Tab4:Toggle({
         ActiveAutoChopTree = state
         if ActiveAutoChopTree then
             runAutoChopTree()
-            print("Auto Chop Tree: ON")
-        else
-            print("Auto Chop Tree: OFF")
         end
     end
 })
