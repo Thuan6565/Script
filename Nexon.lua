@@ -1139,6 +1139,116 @@ local AutoChopTreeToggle = Tab4:Toggle({
 
 
 
+local Section = Tab6:Section({ 
+    Title = "Fuel",
+    TextXAlignment = "Left",
+    TextSize = 17, -- Default Size
+})
+
+-- danh sách item cần highlight + tên
+local itemsFuel = {
+    ["Log"] = true,
+    ["Coal"] = true,
+    ["Oil Barrel"] = true,
+    ["Fuel Canister"] = true,
+    ["Cultist"] = true,
+    ["Bear Corpse"] = true,
+    ["Alpha Wolf Corpse"] = true,
+    ["Wolf Corpse"] = true,
+    ["Crossbow Cultist"] = true
+}
+
+local ActiveFuelESP = false
+local connections = {}
+
+-- thêm highlight
+local function addHighlight(item)
+    if not item:IsA("Model") or not item.PrimaryPart then return end
+    if not item:FindFirstChild("FuelHighlight") then
+        local hl = Instance.new("Highlight")
+        hl.Name = "FuelHighlight"
+        hl.FillColor = Color3.fromRGB(255, 215, 0)
+        hl.OutlineColor = Color3.fromRGB(255, 255, 255)
+        hl.FillTransparency = 0.5
+        hl.OutlineTransparency = 0
+        hl.Adornee = item
+        hl.Parent = item
+    end
+end
+
+-- thêm billboard tên
+local function addBillboard(item)
+    if not item:IsA("Model") or not item.PrimaryPart then return end
+    if not item:FindFirstChild("FuelBillboard") then
+        local billboard = Instance.new("BillboardGui")
+        billboard.Name = "FuelBillboard"
+        billboard.Adornee = item.PrimaryPart
+        billboard.Size = UDim2.new(0, 200, 0, 50)
+        billboard.StudsOffset = Vector3.new(0, 3, 0)
+        billboard.AlwaysOnTop = true
+        billboard.Parent = item
+
+        local text = Instance.new("TextLabel")
+        text.Size = UDim2.new(1, 0, 1, 0)
+        text.BackgroundTransparency = 1
+        text.Text = item.Name
+        text.TextColor3 = Color3.fromRGB(255, 215, 0)
+        text.TextStrokeTransparency = 0
+        text.TextScaled = true
+        text.Font = Enum.Font.SourceSansBold
+        text.Parent = billboard
+    end
+end
+
+-- xử lý 1 item
+local function handleItem(item)
+    if itemsFuel[item.Name] then
+        addHighlight(item)
+        addBillboard(item)
+    end
+end
+
+-- bật/tắt ESP fuel
+local function setFuelESP(state)
+    ActiveFuelESP = state
+    if state then
+        -- quét tất cả item hiện tại
+        for _, item in ipairs(workspace.Items:GetChildren()) do
+            handleItem(item)
+        end
+        -- theo dõi item mới
+        connections["childAdded"] = workspace.Items.ChildAdded:Connect(function(item)
+            task.wait(0.2)
+            handleItem(item)
+        end)
+    else
+        -- tắt: xóa highlight + billboard khỏi item
+        for _, item in ipairs(workspace.Items:GetChildren()) do
+            if item:FindFirstChild("FuelHighlight") then
+                item.FuelHighlight:Destroy()
+            end
+            if item:FindFirstChild("FuelBillboard") then
+                item.FuelBillboard:Destroy()
+            end
+        end
+        -- ngắt kết nối
+        if connections["childAdded"] then
+            connections["childAdded"]:Disconnect()
+            connections["childAdded"] = nil
+        end
+    end
+end
+
+-- Toggle trong library
+local Toggle = Tab6:Toggle({
+    Title = "Fuel ESP",
+    Description = "Highlight + tên cho itemsFuel",
+    Default = false,
+    Callback = function(state)
+        setFuelESP(state)
+        print("Fuel ESP:", state)
+    end
+})
 
 
 
