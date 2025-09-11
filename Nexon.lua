@@ -912,8 +912,8 @@ local Slider = Tab3:Slider({
         Default = 70,
     },
     Callback = function(value)
-        DistanceForKillAura = value
-        print("Distance set to:", DistanceForKillAura) -- debug
+       DistanceForKillAura = tonumber(value)
+       print("Distance set to:", DistanceForKillAura)
     end
 })
 
@@ -965,3 +965,4 @@ local Toggle = Tab3:Toggle({
         end
     end
 })
+
