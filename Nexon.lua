@@ -897,6 +897,12 @@ local DistanceForKillAura = 70
 local KillAuraThread
 
 -- Slider
+local player = game.Players.LocalPlayer
+local ActiveKillAura = false
+local DistanceForKillAura = 70
+local KillAuraThread
+
+-- Slider chỉnh khoảng cách
 local Slider = Tab3:Slider({
     Title = "Distance",
     Step = 1,
@@ -907,16 +913,15 @@ local Slider = Tab3:Slider({
     },
     Callback = function(value)
         DistanceForKillAura = value
+        print("Distance set to:", DistanceForKillAura) -- debug
     end
 })
 
--- Hàm Kill Aura (chạy nền duy nhất)
+-- Hàm Kill Aura
 local function runKillAura()
-    if KillAuraThread then return end -- đã có thread thì không tạo thêm
+    if KillAuraThread then return end -- tránh tạo nhiều thread
     KillAuraThread = task.spawn(function()
-        while task.wait(0.1) do
-            if not ActiveKillAura then break end
-
+        while ActiveKillAura do
             local character = player.Character or player.CharacterAdded:Wait()
             local hrp = character:WaitForChild("HumanoidRootPart")
             local weapon = player.Inventory:FindFirstChild("Old Axe") 
@@ -936,22 +941,27 @@ local function runKillAura()
                     end
                 end
             end
+            task.wait(0.1)
         end
-        KillAuraThread = nil -- vòng lặp kết thúc thì reset
+        KillAuraThread = nil
     end)
 end
 
--- Toggle
+-- Toggle Kill Aura (hoạt động như GUI thủ công)
 local Toggle = Tab3:Toggle({
     Title = "Kill Aura",
-    Desc = "p",
+    Desc = "Tự động đánh mob",
     Icon = "bird",
     Type = "Toggle",
     Default = false,
     Callback = function(state)
-        ActiveKillAura = state
-        if ActiveKillAura then
+        if state then
+            ActiveKillAura = true
             runKillAura()
+            print("Kill Aura: ON") -- debug
+        else
+            ActiveKillAura = false
+            print("Kill Aura: OFF") -- debug
         end
     end
 })
