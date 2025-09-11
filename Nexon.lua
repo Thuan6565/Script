@@ -405,7 +405,7 @@ local Section = Tab:Section({
 
 local Button = Tab:Button({
     Title = "Eat",
-    Desc = " eat Cooked Morsel when hunger < 30%",
+    Desc = " eat Cooked Morsel when hunger < 90%",
     Locked = false,
     Callback = function()
         local Players = game:GetService("Players")
@@ -422,7 +422,7 @@ local Button = Tab:Button({
         -- Hàm ăn thức ăn
         local function eatFood()
             for _, item in ipairs(workspace.Items:GetChildren()) do
-                if item.Name == "Cooked Morsel" then
+                if item.Name == "Cooked Morsel" or item.Name == "Cooked Steak" or item.Name == "Carrot" then
                     requestConsume:InvokeServer(item)
                     print("Đã ăn 1 Cooked Morsel")
                     break
@@ -1029,6 +1029,7 @@ local AutoChopTreeToggle = Tab4:Toggle({
         end
     end
 })
+
 
 
 
