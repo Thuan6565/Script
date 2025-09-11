@@ -1031,9 +1031,12 @@ end
 local KillAuraSlider = Ta4:Slider({
     Title = "Kill Aura Distance",
     Step = 1,
-    Value = {Min = 20, Max = 1000, Default = 100},
-    Callback = function(val)
-        DistanceForKillAura = tonumber(val) or 100
+    Value = {
+            Min = 20, 
+            Max = 1000, 
+            Default = 100},
+    Callback = function(value)
+        DistanceForKillAura = tonumber(value) or 100
     end
 })
 
@@ -1127,6 +1130,7 @@ local AutoChopTreeToggle = Tab4:Toggle({
         end
     end
 })
+
 
 
 
