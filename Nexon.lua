@@ -53,6 +53,12 @@ local Tab4 = Window:Tab({
     Icon = "box",
     Locked = false,
 })
+
+local Tab5 = Window:Tab({
+    Title = "ESP",
+    Icon = "box",
+    Locked = false,
+})
 --Windows
 Window:Tag({
     Title = "v1.0.0",
@@ -1139,7 +1145,7 @@ local AutoChopTreeToggle = Tab4:Toggle({
 
 
 
-local Section = Tab6:Section({ 
+local Section = Tab5:Section({ 
     Title = "Fuel",
     TextXAlignment = "Left",
     TextSize = 17, -- Default Size
@@ -1240,7 +1246,7 @@ local function setFuelESP(state)
 end
 
 -- Toggle trong library
-local Toggle = Tab6:Toggle({
+local Toggle = Tab5:Toggle({
     Title = "Fuel ESP",
     Description = "Highlight + tên cho itemsFuel",
     Default = false,
@@ -1249,6 +1255,7 @@ local Toggle = Tab6:Toggle({
         print("Fuel ESP:", state)
     end
 })
+
 
 
 
