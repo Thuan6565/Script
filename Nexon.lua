@@ -430,7 +430,7 @@ local Button = Tab:Button({
         -- Hàm ăn thức ăn
         local function eatFood()
             for _, item in ipairs(workspace.Items:GetChildren()) do
-                if item.Name == "Cooked Morsel" or item.Name == "Cooked Steak" or item.Name == "Carrot" then
+                if item.Name == "Cooked Morsel" then
                     requestConsume:InvokeServer(item)
                     print("Đã ăn 1 Cooked Morsel")
                     break
@@ -1133,6 +1133,7 @@ local AutoChopTreeToggle = Tab4:Toggle({
         end
     end
 })
+
 
 
 
