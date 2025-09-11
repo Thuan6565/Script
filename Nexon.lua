@@ -485,24 +485,31 @@ end
 
 -- Tabs 2
 
+local selectedItem = "Morsel" -- mặc định
+
+-- Dropdown chọn item
 local Dropdown = Tab:Dropdown({
-    Title = "Dropdown (Multi)",
-    Values = { "Morsel", Steak", "Carrot", "Berry", "Chain", "Metal Chain", "Log", "Coal", "Fuel Canister", "Oil Barrel", "Cultist", "Shotgun Ammo", "Revolver Ammo", "Rifle Ammo"},
+    Title = "Dropdown (Single)",
+    Values = { 
+        "Morsel", "Steak", "Carrot", "Berry", 
+        "Chain", "Metal Chain", "Log", "Coal", 
+        "Fuel Canister", "Oil Barrel", "Cultist", 
+        "Shotgun Ammo", "Revolver Ammo", "Rifle Ammo"
+    },
     Value = "Morsel",
     Callback = function(option) 
-        print("Category selected: " .. option) 
+        selectedItem = option
+        print("Item selected: " .. option) 
     end
 })
 
-local items = Dropdown.Value  
-    
 _G.BringItem = false
 local savedPositionFuel
 
--- Fuel ON
+-- Bring ON
 local FuelOn = Tab2:Button({
     Title = "Bring",
-    Desc = "Bring item",
+    Desc = "Bring selected item",
     Locked = false,
     Callback = function()
         if _G.BringItem then return end
@@ -512,14 +519,18 @@ local FuelOn = Tab2:Button({
         task.spawn(function()
             while _G.BringItem do
                 for _, item in ipairs(workspace.Items:GetChildren()) do
-                    if not _G.BringFuel then break end
-                    if item:IsA("Model") and item.PrimaryPart and targetFuel[item.Name] then
+                    if not _G.BringItem then break end
+                    if item:IsA("Model") and item.PrimaryPart and item.Name == selectedItem then
+                        -- teleport HRP tới item
                         hrp.CFrame = item.PrimaryPart.CFrame + Vector3.new(0,3,0)
                         task.wait(0.2)
+
                         requestDrag:FireServer(item)
                         task.wait(0.1)
+
                         item:PivotTo(savedPositionFuel * CFrame.new(0,3,0))
                         task.wait(0.1)
+
                         stopDrag:FireServer(item)
                         task.wait(0.2)
                     end
@@ -530,7 +541,7 @@ local FuelOn = Tab2:Button({
     end
 })
 
--- Fuel OFF
+-- Bring OFF
 local FuelOff = Tab2:Button({
     Title = "Stop",
     Desc = "Stop bring",
@@ -542,7 +553,6 @@ local FuelOff = Tab2:Button({
         end
     end
 })
-
 
 
 local Section = Tab2:Section({ 
@@ -850,6 +860,12 @@ local targetTools = {
     ["Old Flashlight"] = true
 }
 
+local Section = Tab2:Section({ 
+    Title = "Tools",
+    TextXAlignment = "Left",
+    TextSize = 17, -- Default Size
+})
+
 _G.BringTools = false
 local savedPositionTools
 
@@ -1097,6 +1113,7 @@ local AutoChopTreeToggle = Tab4:Toggle({
         end
     end
 })
+
 
 
 
