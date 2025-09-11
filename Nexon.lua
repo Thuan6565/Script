@@ -982,7 +982,7 @@ local KillAuraSlider = Tab4:Slider({
     Step = 1,
     Value = {
         Min = 20,
-        Max = 1000,
+        Max = 1500,
         Default = 1000,
     },
     Callback = function(value)
@@ -1108,6 +1108,7 @@ local AutoChopTreeToggle = Tab4:Toggle({
         end
     end
 })
+
 
 
 
