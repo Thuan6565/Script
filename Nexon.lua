@@ -19,6 +19,14 @@ local Window = WindUI:CreateWindow({
     BackgroundImageTransparency = 0.42,
     HideSearchBar = true,
     ScrollBarEnabled = false,
+
+    User = {
+        Enabled = true,
+        Anonymous = true,
+        Callback = function()
+            print("clicked")
+        end,
+    },
 })
 --Tabs
 local Tab = Window:Tab({
@@ -290,7 +298,7 @@ local Button = Tab:Button({
 })
 
 local Button = Tab:Button({
-    Title = "Tween to lost child e",
+    Title = "Tween to lost child 3",
     Desc = "Carry lost child 3 to campire",
     Locked = false,
     Callback = function()
@@ -476,6 +484,66 @@ end
 })
 
 -- Tabs 2
+
+local Dropdown = Tab:Dropdown({
+    Title = "Dropdown (Multi)",
+    Values = { "Morsel", Steak", "Carrot", "Berry", "Chain", "Metal Chain", "Log", "Coal", "Fuel Canister", "Oil Barrel", "Cultist", "Shotgun Ammo", "Revolver Ammo", "Rifle Ammo"},
+    Value = "Morsel",
+    Callback = function(option) 
+        print("Category selected: " .. option) 
+    end
+})
+
+local items = Dropdown.Value  
+    
+_G.BringItem = false
+local savedPositionFuel
+
+-- Fuel ON
+local FuelOn = Tab2:Button({
+    Title = "Bring",
+    Desc = "Bring item",
+    Locked = false,
+    Callback = function()
+        if _G.BringItem then return end
+        _G.BringItem = true
+        savedPositionFuel = hrp.CFrame
+
+        task.spawn(function()
+            while _G.BringItem do
+                for _, item in ipairs(workspace.Items:GetChildren()) do
+                    if not _G.BringFuel then break end
+                    if item:IsA("Model") and item.PrimaryPart and targetFuel[item.Name] then
+                        hrp.CFrame = item.PrimaryPart.CFrame + Vector3.new(0,3,0)
+                        task.wait(0.2)
+                        requestDrag:FireServer(item)
+                        task.wait(0.1)
+                        item:PivotTo(savedPositionFuel * CFrame.new(0,3,0))
+                        task.wait(0.1)
+                        stopDrag:FireServer(item)
+                        task.wait(0.2)
+                    end
+                end
+                task.wait(1)
+            end
+        end)
+    end
+})
+
+-- Fuel OFF
+local FuelOff = Tab2:Button({
+    Title = "Stop",
+    Desc = "Stop bring",
+    Locked = false,
+    Callback = function()
+        _G.BringItem = false
+        if savedPositionFuel then
+            hrp.CFrame = savedPositionFuel
+        end
+    end
+})
+
+
 
 local Section = Tab2:Section({ 
     Title = "Fuel",
@@ -898,7 +966,7 @@ local DistanceForKillAura = 100
 local KillAuraThread
 
 -- Slider chỉnh khoảng cách
-local KillAuraSlider = Tab3:Slider({
+local KillAuraSlider = Tab4:Slider({
     Title = "Kill Aura Distance",
     Step = 1,
     Value = {
@@ -942,7 +1010,7 @@ local function runKillAura()
 end
 
 -- Toggle
-local KillAuraToggle = Tab3:Toggle({
+local KillAuraToggle = Tab4:Toggle({
     Title = "Kill Aura",
     Desc = "Tự động đánh mob xung quanh",
     Icon = "sword",
@@ -1006,7 +1074,7 @@ local AutoChopTreeSlider = Tab4:Slider({
     Step = 1,
     Value = {
         Min = 20,
-        Max = 1000,
+        Max = 100,
         Default = 1000,
     },
     Callback = function(value)
@@ -1019,7 +1087,7 @@ local AutoChopTreeSlider = Tab4:Slider({
 local AutoChopTreeToggle = Tab4:Toggle({
     Title = "Auto Chop Tree",
     Desc = "Tree Aura",
-    Icon = "tree",
+    Icon = "bird",
     Type = "Toggle",
     Default = false,
     Callback = function(state)
@@ -1029,6 +1097,7 @@ local AutoChopTreeToggle = Tab4:Toggle({
         end
     end
 })
+
 
 
 
