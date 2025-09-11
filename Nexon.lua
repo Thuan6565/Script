@@ -974,25 +974,25 @@ local Section = Tab4:Section({
 
 local player = game.Players.LocalPlayer
 local ActiveAutoChopTree = false
-local DistanceForAutoChopTree = 250
+local DistanceForAutoChopTree = 100
 local AutoChopTreeThread
 
 -- Slider chỉnh khoảng cách
-local PlayerDistanceAutoChopTreeSlider = Tab4:Slider({
-    Title = "Distance For Auto Chop Tree (<=250 if strong axe/chainsaw)",
+local AutoChopTreeSlider = Tab4:Slider({
+    Title = "Distance For Auto Chop Tree",
     Step = 1,
     Value = {
-        Min = 0,
-        Max = 1600,
-        Default = 250,
+        Min = 20,
+        Max = 1000,
+        Default = 100,
     },
     Callback = function(value)
-        DistanceForAutoChopTree = tonumber(value) or 250
+        DistanceForAutoChopTree = tonumber(value) or 100
         print("Auto Chop Distance:", DistanceForAutoChopTree)
     end
 })
 
--- Hàm chính Auto Chop Tree
+-- Hàm chính
 local function runAutoChopTree()
     if AutoChopTreeThread then return end
     AutoChopTreeThread = task.spawn(function()
@@ -1005,54 +1005,42 @@ local function runAutoChopTree()
                 or player.Inventory:FindFirstChild("Chainsaw")
 
             if weapon then
-                -- Foliage
-                for _, tree in pairs(workspace.Map.Foliage:GetChildren()) do
-                    if tree:IsA("Model") and (tree.Name == "Small Tree" or tree.Name == "TreeBig1" or tree.Name == "TreeBig2") and tree.PrimaryPart then
-                        local distance = (tree.PrimaryPart.Position - hrp.Position).Magnitude
-                        if distance <= DistanceForAutoChopTree then
-                            game:GetService("ReplicatedStorage").RemoteEvents.ToolDamageObject:InvokeServer(
-                                tree, weapon, 999, hrp.CFrame
-                            )
+                local function chop(folder)
+                    for _, tree in pairs(folder:GetChildren()) do
+                        if tree:IsA("Model") and (tree.Name == "Small Tree" or tree.Name == "TreeBig1" or tree.Name == "TreeBig2") and tree.PrimaryPart then
+                            local distance = (tree.PrimaryPart.Position - hrp.Position).Magnitude
+                            if distance <= DistanceForAutoChopTree then
+                                game:GetService("ReplicatedStorage").RemoteEvents.ToolDamageObject:InvokeServer(
+                                    tree, weapon, 999, hrp.CFrame
+                                )
+                            end
                         end
                     end
                 end
 
-                -- Landmarks
-                for _, tree in pairs(workspace.Map.Landmarks:GetChildren()) do
-                    if tree:IsA("Model") and (tree.Name == "Small Tree" or tree.Name == "TreeBig1" or tree.Name == "TreeBig2") and tree.PrimaryPart then
-                        local distance = (tree.PrimaryPart.Position - hrp.Position).Magnitude
-                        if distance <= DistanceForAutoChopTree then
-                            game:GetService("ReplicatedStorage").RemoteEvents.ToolDamageObject:InvokeServer(
-                                tree, weapon, 999, hrp.CFrame
-                            )
-                        end
-                    end
-                end
+                chop(workspace.Map.Foliage)
+                chop(workspace.Map.Landmarks)
             end
-
             task.wait(0.1)
         end
         AutoChopTreeThread = nil
     end)
 end
 
--- Toggle Auto Chop Tree
+-- Toggle bật/tắt
 local AutoChopTreeToggle = Tab4:Toggle({
     Title = "Auto Chop Tree",
-    Desc = "Chặt cây tự động",
+    Desc = "Tree aura",
     Icon = "tree",
     Type = "Toggle",
     Default = false,
     Callback = function(state)
-        if state then
-            ActiveAutoChopTree = true
+        ActiveAutoChopTree = state
+        if ActiveAutoChopTree then
             runAutoChopTree()
             print("Auto Chop Tree: ON")
         else
-            ActiveAutoChopTree = false
             print("Auto Chop Tree: OFF")
         end
     end
 })
-
-
