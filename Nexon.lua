@@ -1010,7 +1010,7 @@ local function runAutoChopTree()
 end
 
 -- Slider trong library
-local AutoChopTreeSlider = Tab3:Slider({
+local AutoChopTreeSlider = Tab4:Slider({
     Title = "Distance For Auto Chop Tree",
     Step = 1,
     Value = {
@@ -1019,14 +1019,15 @@ local AutoChopTreeSlider = Tab3:Slider({
         Default = 100,
     },
     Callback = function(value)
-        DistanceForAutoChopTree = tonumber(value) or 100
+        DistanceForAutoChopTree = tonumber(value) or 1000
+        print("Distance set to:", DistanceForAutoChopTree)
     end
 })
 
 -- Toggle trong library
-local AutoChopTreeToggle = Tab3:Toggle({
+local AutoChopTreeToggle = Tab4:Toggle({
     Title = "Auto Chop Tree",
-    Desc = "Tự động chặt cây",
+    Desc = "Tree Aura",
     Icon = "tree",
     Type = "Toggle",
     Default = false,
@@ -1037,3 +1038,4 @@ local AutoChopTreeToggle = Tab3:Toggle({
         end
     end
 })
+
