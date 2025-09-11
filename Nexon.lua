@@ -975,6 +975,8 @@ local player = game.Players.LocalPlayer
 local ActiveKillAura = false
 local DistanceForKillAura = 100
 local KillAuraThread
+
+-- danh sách mob hiện tại
 local mobs = {}
 
 -- hàm quét mob
@@ -992,7 +994,7 @@ end
 local function runKillAura()
     if KillAuraThread then return end
     KillAuraThread = task.spawn(function()
-        -- quét lại mob mỗi 10 giây
+        -- quét lại mob mỗi 10s
         task.spawn(function()
             while ActiveKillAura do
                 scanMobs()
@@ -1027,25 +1029,24 @@ local function runKillAura()
     end)
 end
 
--- Slider chỉnh khoảng cách
-local KillAuraSlider = Ta4:Slider({
-    Title = "Kill Aura Distance",
+-- Slider điều chỉnh khoảng cách
+local Slider = Tab4:Slider({
+    Title = "Khoảng cách Kill Aura",
+    Description = "Điều chỉnh phạm vi",
+    Min = 20,
+    Max = 1000,
+    Default = 100,
     Step = 1,
-    Value = {
-            Min = 20, 
-            Max = 1000, 
-            Default = 100},
     Callback = function(value)
         DistanceForKillAura = tonumber(value) or 100
+        print("Distance set to:", DistanceForKillAura)
     end
 })
 
 -- Toggle bật/tắt Kill Aura
-local KillAuraToggle = Tab4:Toggle({
+local Toggle = Tab4:Toggle({
     Title = "Kill Aura",
-    Desc = "Tự động đánh mob",
-    Icon = "sword",
-    Type = "Toggle",
+    Description = "Tự động đánh mob",
     Default = false,
     Callback = function(state)
         ActiveKillAura = state
@@ -1130,6 +1131,7 @@ local AutoChopTreeToggle = Tab4:Toggle({
         end
     end
 })
+
 
 
 
