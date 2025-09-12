@@ -59,6 +59,12 @@ local Tab5 = Window:Tab({
     Icon = "box",
     Locked = false,
 })
+
+local Tab6 = Window:Tab({
+    Title = "Misc",
+    Icon = "box",
+    Locked = false,
+})
 --Windows
 Window:Tag({
     Title = "v1.0.0",
@@ -1175,7 +1181,7 @@ local function addBillboard(item)
         text.Size = UDim2.new(1, 0, 1, 0)
         text.BackgroundTransparency = 1
         text.Text = item.Name
-        text.TextColor3 = Color3.fromRGB(255, 0, 0) -- chữ đỏ
+        text.TextColor3 = Color3.fromRGB(255, 255, 0) -- chữ đỏ
         text.TextStrokeColor3 = Color3.fromRGB(0, 0, 0) -- viền đen
         text.TextStrokeTransparency = 0 -- 0 = hiện rõ
         text.TextSize = 14 -- cỡ chữ cố định
@@ -1232,6 +1238,12 @@ local Toggle = Tab5:Toggle({
         setFuelESP(state)
         print("Fuel ESP:", state)
     end
+})
+
+local Section = Tab5:Section({ 
+    Title = "Metal",
+    TextXAlignment = "Left",
+    TextSize = 17, -- Default Size
 })
 
 local ItemsMetal = {
@@ -1344,5 +1356,6 @@ local Toggle = Tab5:Toggle({
         print("Metal ESP:", state)
     end
 })
+
 
 
