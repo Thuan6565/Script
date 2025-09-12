@@ -1105,7 +1105,7 @@ local ActiveKillAura = false
 local DistanceForKillAura = 70 -- default
 
 -- Slider (dùng Value = {...} như bạn đưa)
-local Slider = Tab:Slider({
+local Slider = Tab4:Slider({
     Title = "Kill Aura Distance",
     Step = 1,
     Value = {
@@ -1150,7 +1150,7 @@ local function runKillAura()
 end
 
 -- Toggle
-local Toggle = Tab:Toggle({
+local Toggle = Tab4:Toggle({
     Title = "Kill Aura",
     Default = false,
     Callback = function(state)
@@ -1211,7 +1211,7 @@ local AutoChopTreeSlider = Tab4:Slider({
     Value = {
         Min = 20,
         Max = 100,
-        Default = 1000,
+        Default = 100,
     },
     Callback = function(value)
         DistanceForAutoChopTree = tonumber(value) or 1000
@@ -1518,6 +1518,7 @@ local Button = Tab6:Button({
         end
     end
 })
+
 
 
 
