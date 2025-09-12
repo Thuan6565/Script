@@ -855,10 +855,22 @@ local ToolsOff = Tab2:Button({
     end
 })
 
-local Section = Tab3:Section({ 
+local Section = Tab2:Section({ 
     Title = "Others",
     TextXAlignment = "Left",
     TextSize = 17, -- Default Size
+})
+
+local Button = Tab:Button({
+    Title = "Stop All",
+    Desc = "",
+    Locked = false,
+    Callback = function()
+        _G.BringLog = false
+        _G.BringCoal = false
+        _G.BringMicrowave = false
+        _G.BringSteak = false
+    end
 })
 
 _G.BringLog = false
@@ -1518,6 +1530,7 @@ local Button = Tab6:Button({
         end
     end
 })
+
 
 
 
