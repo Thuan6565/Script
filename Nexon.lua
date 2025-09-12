@@ -1239,6 +1239,115 @@ local Toggle = Tab5:Toggle({
 
 
 
+local ItemsMetal = {
+    ["Bolt"] = true,
+    ["Sheet Metal"] = true,
+    ["UFO Junk"] = true,
+    ["UFO Component"] = true,
+    ["Broken Fan"] = true,
+    ["Broken Radio"] = true,
+    ["Broken Microwave"] = true,
+    ["Tyre"] = true,
+    ["Metal Chair"] = true,
+    ["Old Car Engine"] = true,
+    ["Cultist Experiment"] = true,
+    ["Washing Machine"] = true,
+    ["Cultist Prototype"] = true,
+    ["UFO Scrap"] = true
+}
+
+local ActiveMetalESP = false
+local connections = {}
+
+-- thêm highlight
+local function addHighlight(item)
+    if not item:IsA("Model") or not item.PrimaryPart then return end
+    if not item:FindFirstChild("MetalHighlight") then
+        local hl = Instance.new("Highlight")
+        hl.Name = "MetalHighlight"
+        hl.FillColor = Color3.fromRGB(255, 215, 0)
+        hl.OutlineColor = Color3.fromRGB(255, 255, 255)
+        hl.FillTransparency = 0.5
+        hl.OutlineTransparency = 0
+        hl.Adornee = item
+        hl.Parent = item.PrimaryPart
+    end
+end
+
+-- thêm billboard tên
+local function addBillboard(item)
+    if not item:IsA("Model") or not item.PrimaryPart then return end
+    if not item:FindFirstChild("MetalBillboard") then
+        local billboard = Instance.new("BillboardGui")
+        billboard.Name = "MetalBillboard"
+        billboard.Adornee = item.PrimaryPart
+        billboard.Size = UDim2.new(0, 200, 0, 50)
+        billboard.StudsOffset = Vector3.new(0, 3, 0)
+        billboard.AlwaysOnTop = true
+        billboard.Parent = item
+
+        local text = Instance.new("TextLabel")
+        text.Size = UDim2.new(1, 0, 1, 0)
+        text.BackgroundTransparency = 1
+        text.Text = item.Name
+        text.TextColor3 = Color3.fromRGB(255, 0, 0)
+        text.TextStrokeTransparency = 0
+        text.TextScaled = true
+        text.Font = Enum.Font.SourceSansBold
+        text.Parent = billboard
+    end
+end
+
+-- xử lý 1 item
+local function handleItem(item)
+    if itemsFuel[item.Name] then
+        addHighlight(item)
+        addBillboard(item)
+    end
+end
+
+-- bật/tắt ESP fuel
+local function setMetalESP(state)
+    ActiveMetalESP = state
+    if state then
+        -- quét tất cả item hiện tại
+        for _, item in ipairs(workspace.Items:GetChildren()) do
+            handleItem(item)
+        end
+        -- theo dõi item mới
+        connections["childAdded"] = workspace.Items.ChildAdded:Connect(function(item)
+            task.wait(0.2)
+            handleItem(item)
+        end)
+    else
+        -- tắt: xóa highlight + billboard khỏi item
+        for _, item in ipairs(workspace.Items:GetChildren()) do
+            if item:FindFirstChild("MetalHighlight") then
+                item.FuelHighlight:Destroy()
+            end
+            if item:FindFirstChild("MetalBillboard") then
+                item.MetalBillboard:Destroy()
+            end
+        end
+        -- ngắt kết nối
+        if connections["childAdded"] then
+            connections["childAdded"]:Disconnect()
+            connections["childAdded"] = nil
+        end
+    end
+end
+
+-- Toggle trong library
+local Toggle = Tab5:Toggle({
+    Title = "Metal ESP",
+    Description = "",
+    Default = false,
+    Callback = function(state)
+        setMetalESP(state)
+        print("Metal ESP:", state)
+    end
+})
+
 
 
 
