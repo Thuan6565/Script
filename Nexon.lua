@@ -1175,9 +1175,10 @@ local function addBillboard(item)
         text.Size = UDim2.new(1, 0, 1, 0)
         text.BackgroundTransparency = 1
         text.Text = item.Name
-        text.TextColor3 = Color3.fromRGB(255, 255, 0)
-        text.TextStrokeTransparency = 0
-        text.TextScaled = true
+        text.TextColor3 = Color3.fromRGB(255, 0, 0) -- chữ đỏ
+        text.TextStrokeColor3 = Color3.fromRGB(0, 0, 0) -- viền đen
+        text.TextStrokeTransparency = 0 -- 0 = hiện rõ
+        text.TextSize = 14 -- cỡ chữ cố định
         text.Font = Enum.Font.SourceSansBold
         text.Parent = billboard
     end
@@ -1233,12 +1234,6 @@ local Toggle = Tab5:Toggle({
     end
 })
 
-
-
-
-
-
-
 local ItemsMetal = {
     ["Bolt"] = true,
     ["Sheet Metal"] = true,
@@ -1270,7 +1265,7 @@ local function addHighlight(item)
         hl.FillTransparency = 0.5
         hl.OutlineTransparency = 0
         hl.Adornee = item
-        hl.Parent = item.PrimaryPart
+        hl.Parent = item
     end
 end
 
@@ -1290,23 +1285,25 @@ local function addBillboard(item)
         text.Size = UDim2.new(1, 0, 1, 0)
         text.BackgroundTransparency = 1
         text.Text = item.Name
-        text.TextColor3 = Color3.fromRGB(255, 0, 0)
-        text.TextStrokeTransparency = 0
-        text.TextScaled = true
+        text.TextColor3 = Color3.fromRGB(255, 0, 0) -- chữ đỏ
+        text.TextStrokeColor3 = Color3.fromRGB(0, 0, 0) -- viền đen
+        text.TextStrokeTransparency = 0 -- 0 = hiện rõ
+        text.TextSize = 14 -- cỡ chữ cố định
         text.Font = Enum.Font.SourceSansBold
         text.Parent = billboard
+        text.TextScaled = false
     end
 end
 
 -- xử lý 1 item
 local function handleItem(item)
-    if itemsFuel[item.Name] then
+    if ItemsMetal[item.Name] then
         addHighlight(item)
         addBillboard(item)
     end
 end
 
--- bật/tắt ESP fuel
+-- bật/tắt ESP
 local function setMetalESP(state)
     ActiveMetalESP = state
     if state then
@@ -1320,10 +1317,10 @@ local function setMetalESP(state)
             handleItem(item)
         end)
     else
-        -- tắt: xóa highlight + billboard khỏi item
+        -- tắt: xóa highlight + billboard
         for _, item in ipairs(workspace.Items:GetChildren()) do
             if item:FindFirstChild("MetalHighlight") then
-                item.FuelHighlight:Destroy()
+                item.MetalHighlight:Destroy()
             end
             if item:FindFirstChild("MetalBillboard") then
                 item.MetalBillboard:Destroy()
@@ -1340,24 +1337,12 @@ end
 -- Toggle trong library
 local Toggle = Tab5:Toggle({
     Title = "Metal ESP",
-    Description = "",
+    Description = "Highlight + tên cho ItemsMetal",
     Default = false,
     Callback = function(state)
         setMetalESP(state)
         print("Metal ESP:", state)
     end
 })
-
-
-
-
-
-
-
-
-
-
-
-
 
 
