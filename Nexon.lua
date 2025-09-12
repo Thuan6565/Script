@@ -1358,4 +1358,56 @@ local Toggle = Tab5:Toggle({
 })
 
 
+local Lighting = game:GetService("Lighting")
+local FullBrightConnection
+
+local Toggle = Tab6:Toggle({
+    Title = "Full Bright",
+    Description = "",
+    Default = false,
+    Callback = function(state)
+        if state then
+            -- bật sáng
+            FullBrightConnection = game:GetService("RunService").RenderStepped:Connect(function()
+                Lighting.Ambient = Color3.fromRGB(255, 255, 255)
+                Lighting.ColorShift_Bottom = Color3.fromRGB(255, 255, 255)
+                Lighting.ColorShift_Top = Color3.fromRGB(255, 255, 255)
+                Lighting.Brightness = 2
+                Lighting.ClockTime = 14
+                Lighting.FogEnd = 1e6
+            end)
+        else
+            -- tắt: trả về mặc định
+            if FullBrightConnection then
+                FullBrightConnection:Disconnect()
+                FullBrightConnection = nil
+            end
+            Lighting.Ambient = Color3.fromRGB(127, 127, 127)
+            Lighting.ColorShift_Bottom = Color3.fromRGB(0, 0, 0)
+            Lighting.ColorShift_Top = Color3.fromRGB(127, 127, 127)
+            Lighting.Brightness = 1
+            Lighting.ClockTime = 12
+            Lighting.FogEnd = 1000
+        end
+    end
+})
+
+local Button = Tab6:Button({
+    Title = "Teleport to Campfire",
+    Description = "",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+        local campfire = workspace:FindFirstChild("Map")
+            and workspace.Map:FindFirstChild("Campground")
+            and workspace.Map.Campground:FindFirstChild("MainFire")
+
+        if hrp and campfire and campfire:IsA("Model") and campfire.PrimaryPart then
+            hrp.CFrame = campfire.PrimaryPart.CFrame + Vector3.new(0, 5, 0)
+        end
+    end
+})
+
+
+
 
