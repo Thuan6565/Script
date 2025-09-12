@@ -984,18 +984,19 @@ local Section = Tab4:Section({
 })
 
 local ActiveKillAura = false
-local DistanceForKillAura = 100 -- mặc định
+local DistanceForKillAura = 70 -- default
 
--- Slider để chỉnh khoảng cách
+-- Slider (dùng Value = {...} như bạn đưa)
 local Slider = Tab:Slider({
     Title = "Kill Aura Distance",
-    Description = "Khoảng cách tấn công mob",
-    Min = 20,
-    Max = 1000,
-    Default = 100,
+    Step = 1,
+    Value = {
+        Min = 20,
+        Max = 1200,
+        Default = 70,
+    },
     Callback = function(value)
-        DistanceForKillAura = value
-        print("Kill Aura distance set to:", value)
+        DistanceForKillAura = tonumber(value) or 70
     end
 })
 
@@ -1005,20 +1006,15 @@ local function runKillAura()
         while ActiveKillAura do
             local player = game.Players.LocalPlayer
             local character = player.Character or player.CharacterAdded:Wait()
-            local hrp = character:FindFirstChild("HumanoidRootPart")
-            if not hrp then continue end
+            local hrp = character:WaitForChild("HumanoidRootPart")
 
-            local weapon = player.Backpack:FindFirstChild("Old Axe")
-                or player.Backpack:FindFirstChild("Good Axe")
-                or player.Backpack:FindFirstChild("Strong Axe")
-                or player.Backpack:FindFirstChild("Chainsaw")
-                or player.Character:FindFirstChild("Old Axe")
-                or player.Character:FindFirstChild("Good Axe")
-                or player.Character:FindFirstChild("Strong Axe")
-                or player.Character:FindFirstChild("Chainsaw")
+            local weapon = player.Inventory:FindFirstChild("Old Axe")
+                or player.Inventory:FindFirstChild("Good Axe")
+                or player.Inventory:FindFirstChild("Strong Axe")
+                or player.Inventory:FindFirstChild("Chainsaw")
 
             if weapon then
-                for _, mob in ipairs(workspace.Characters:GetChildren()) do
+                for _, mob in pairs(workspace.Characters:GetChildren()) do
                     if mob:IsA("Model") and mob.PrimaryPart and mob ~= character then
                         local distance = (mob.PrimaryPart.Position - hrp.Position).Magnitude
                         if distance <= DistanceForKillAura then
@@ -1030,15 +1026,14 @@ local function runKillAura()
                 end
             end
 
-            task.wait(0.05) -- nhanh
+            task.wait(0.1)
         end
     end)
 end
 
--- Toggle bật/tắt Kill Aura
+-- Toggle
 local Toggle = Tab:Toggle({
     Title = "Kill Aura",
-    Description = "Tự động đánh mob trong khoảng cách",
     Default = false,
     Callback = function(state)
         ActiveKillAura = state
@@ -1047,6 +1042,7 @@ local Toggle = Tab:Toggle({
         end
     end
 })
+
 local Section = Tab4:Section({ 
     Title = "Tree Aura",
     TextXAlignment = "Left",
@@ -1404,6 +1400,7 @@ local Button = Tab6:Button({
         end
     end
 })
+
 
 
 
