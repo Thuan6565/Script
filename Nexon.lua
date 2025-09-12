@@ -904,7 +904,7 @@ local function bringLogs()
                 if not _G.BringLog then break end
                 if item:IsA("Model") and item.PrimaryPart and item.Name == "Log" then
                     -- Teleport tới log
-                    hrp.CFrame = item.PrimaryPart.CFrame + Vector3.new(0, 3, 0)
+                    
                     task.wait(0.2)
 
                     -- Kéo về
@@ -948,7 +948,7 @@ local function bringCoal()
                 if not _G.BringCoal then break end
                 if item:IsA("Model") and item.PrimaryPart and item.Name == "Coal" then
                     -- Teleport tới Coal
-                    hrp.CFrame = item.PrimaryPart.CFrame + Vector3.new(0, 3, 0)
+                    
                     task.wait(0.2)
 
                     -- Kéo về
@@ -992,7 +992,7 @@ local function bringMicrowave()
                 if not _G.BringMicrowave then break end
                 if item:IsA("Model") and item.PrimaryPart and item.Name == "Broken Microwave" then
                     -- Teleport tới Broken Microwave
-                    hrp.CFrame = item.PrimaryPart.CFrame + Vector3.new(0, 3, 0)
+                    
                     task.wait(0.2)
 
                     -- Kéo về
@@ -1036,7 +1036,7 @@ local function bringSteak()
                 if not _G.BringSteak then break end
                 if item:IsA("Model") and item.PrimaryPart and item.Name == "Steak" then
                     -- Teleport tới Steak
-                    hrp.CFrame = item.PrimaryPart.CFrame + Vector3.new(0, 3, 0)
+                    
                     task.wait(0.2)
 
                     -- Kéo về
@@ -1545,6 +1545,7 @@ local Button = Tab6:Button({
         end
     end
 })
+
 
 
 
