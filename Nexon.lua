@@ -234,7 +234,7 @@ local Button = Tab:Button({
         else
             -- Tween đến Lost Child
             local distance = (root.Position - target.Position).Magnitude
-            local tweenInfo = TweenInfo.new(distance / 50000, Enum.EasingStyle.Linear)
+            local tweenInfo = TweenInfo.new(distance / 500, Enum.EasingStyle.Linear)
             local tweenTo = TweenService:Create(root, tweenInfo, {CFrame = target.CFrame + Vector3.new(0, 3, 0)})
             tweenTo:Play()
             tweenTo.Completed:Wait()
@@ -288,7 +288,7 @@ local Button = Tab:Button({
         else
             -- Tween đến Lost Child
             local distance = (root.Position - target.Position).Magnitude
-            local tweenInfo = TweenInfo.new(distance / 50000, Enum.EasingStyle.Linear)
+            local tweenInfo = TweenInfo.new(distance / 500, Enum.EasingStyle.Linear)
             local tweenTo = TweenService:Create(root, tweenInfo, {CFrame = target.CFrame + Vector3.new(0, 3, 0)})
             tweenTo:Play()
             tweenTo.Completed:Wait()
@@ -342,7 +342,7 @@ local Button = Tab:Button({
         else
             -- Tween đến Lost Child
             local distance = (root.Position - target.Position).Magnitude
-            local tweenInfo = TweenInfo.new(distance / 50000, Enum.EasingStyle.Linear)
+            local tweenInfo = TweenInfo.new(distance / 500, Enum.EasingStyle.Linear)
             local tweenTo = TweenService:Create(root, tweenInfo, {CFrame = target.CFrame + Vector3.new(0, 3, 0)})
             tweenTo:Play()
             tweenTo.Completed:Wait()
@@ -396,7 +396,7 @@ local Button = Tab:Button({
         else
             -- Tween đến Lost Child
             local distance = (root.Position - target.Position).Magnitude
-            local tweenInfo = TweenInfo.new(distance / 50000, Enum.EasingStyle.Linear)
+            local tweenInfo = TweenInfo.new(distance / 500, Enum.EasingStyle.Linear)
             local tweenTo = TweenService:Create(root, tweenInfo, {CFrame = target.CFrame + Vector3.new(0, 3, 0)})
             tweenTo:Play()
             tweenTo.Completed:Wait()
@@ -1232,6 +1232,7 @@ local Toggle = Tab5:Toggle({
         print("Fuel ESP:", state)
     end
 })
+
 
 
 
