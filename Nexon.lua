@@ -861,6 +861,13 @@ local Section = Tab2:Section({
     TextSize = 17, -- Default Size
 })
 
+-- lưu vị trí trước khi bring
+_G.SavedPosition = nil
+
+-- mỗi script bring (Log, Coal, Microwave, Steak) khi bật sẽ set:
+-- _G.SavedPosition = hrp.CFrame
+
+-- Nút Stop All
 local Button = Tab2:Button({
     Title = "Stop All",
     Desc = "",
@@ -870,6 +877,14 @@ local Button = Tab2:Button({
         _G.BringCoal = false
         _G.BringMicrowave = false
         _G.BringSteak = false
+
+        -- trả về vị trí cũ nếu có lưu
+        local player = game.Players.LocalPlayer
+        local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+        if hrp and _G.SavedPosition then
+            hrp.CFrame = _G.SavedPosition
+            _G.SavedPosition = nil -- reset sau khi quay lại
+        end
     end
 })
 
@@ -1530,6 +1545,7 @@ local Button = Tab6:Button({
         end
     end
 })
+
 
 
 
