@@ -982,61 +982,54 @@ local ActiveKillAura = false
 local DistanceForKillAura = 100
 local KillAuraThread
 
--- danh sách mob hiện tại
-local mobs = {}
-
--- hàm quét mob
-local function scanMobs()
-    local newList = {}
-    for _, mob in pairs(workspace.Characters:GetChildren()) do
-        if mob:IsA("Model") and mob.PrimaryPart then
-            table.insert(newList, mob)
-        end
-    end
-    mobs = newList
-end
-
--- Kill Aura chạy nền
 local function runKillAura()
     if KillAuraThread then return end
     KillAuraThread = task.spawn(function()
-        -- quét lại mob mỗi 10s
-        task.spawn(function()
-            while ActiveKillAura do
-                scanMobs()
-                task.wait(10)
-            end
-        end)
-
-        -- vòng lặp đánh mob
         while ActiveKillAura do
-            local character = player.Character or player.CharacterAdded:Wait()
-            local hrp = character:WaitForChild("HumanoidRootPart")
-            local weapon = player.Inventory:FindFirstChild("Old Axe") 
-                or player.Inventory:FindFirstChild("Good Axe") 
-                or player.Inventory:FindFirstChild("Strong Axe") 
+            local char = player.Character or player.CharacterAdded:Wait()
+            local hrp = char:WaitForChild("HumanoidRootPart")
+
+            local weapon = player.Inventory:FindFirstChild("Old Axe")
+                or player.Inventory:FindFirstChild("Good Axe")
+                or player.Inventory:FindFirstChild("Strong Axe")
                 or player.Inventory:FindFirstChild("Chainsaw")
 
             if weapon then
-                for _, mob in ipairs(mobs) do
-                    if mob and mob.Parent and mob.PrimaryPart then
-                        local distance = (mob.PrimaryPart.Position - hrp.Position).Magnitude
-                        if distance <= DistanceForKillAura then
-                            game:GetService("ReplicatedStorage").RemoteEvents.ToolDamageObject:InvokeServer(
-                                mob, weapon, 999, hrp.CFrame
-                            )
+                for _, mob in pairs(workspace.Characters:GetChildren()) do
+                    if mob:IsA("Model") then
+                        local primary = mob.PrimaryPart or mob:FindFirstChildWhichIsA("BasePart")
+                        if primary then
+                            local distance = (primary.Position - hrp.Position).Magnitude
+                            if distance <= DistanceForKillAura then
+                                game:GetService("ReplicatedStorage").RemoteEvents.ToolDamageObject:InvokeServer(
+                                    mob, weapon, 999, hrp.CFrame
+                                )
+                            end
                         end
                     end
                 end
             end
-            task.wait(0.1)
+            task.wait(0.15) -- điều chỉnh tốc độ quét
         end
         KillAuraThread = nil
     end)
 end
 
--- Slider điều chỉnh khoảng cách
+-- toggle GUI
+local Toggle = Tab4:Toggle({
+    Title = "Kill Aura",
+    Description = "Tự động đánh mob",
+    Icon = "bird",
+    Default = false,
+    Callback = function(state)
+        ActiveKillAura = state
+        if ActiveKillAura then
+            runKillAura()
+        end
+    end
+})
 
+-- slider distance GUI
 local Slider = Tab4:Slider({
     Title = "Khoảng cách Kill Aura",
     Step = 1,
@@ -1048,22 +1041,6 @@ local Slider = Tab4:Slider({
     Callback = function(value)
         DistanceForKillAura = tonumber(value) or 100
         print("Distance set to:", DistanceForKillAura)
-    end
-})
-
--- Toggle bật/tắt Kill Aura
-local Toggle = Tab4:Toggle({
-    Title = "Kill Aura",
-    Description = "Tự động đánh mob",
-    Default = false,
-    Callback = function(state)
-        ActiveKillAura = state
-        if ActiveKillAura then
-            scanMobs()
-            runKillAura()
-        else
-            print("Kill Aura OFF")
-        end
     end
 })
 
@@ -1255,6 +1232,7 @@ local Toggle = Tab5:Toggle({
         print("Fuel ESP:", state)
     end
 })
+
 
 
 
