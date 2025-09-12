@@ -861,7 +861,7 @@ local Section = Tab2:Section({
     TextSize = 17, -- Default Size
 })
 
-local Button = Tab:Button({
+local Button = Tab2:Button({
     Title = "Stop All",
     Desc = "",
     Locked = false,
@@ -907,7 +907,7 @@ local function bringLogs()
 end
 
 -- Nút Bring Log
-local ButtonOn = Tab:Button({
+local ButtonOn = Tab2:Button({
     Title = "Bring Log",
     Desc = "Bring all Logs",
     Callback = function()
@@ -1530,6 +1530,7 @@ local Button = Tab6:Button({
         end
     end
 })
+
 
 
 
