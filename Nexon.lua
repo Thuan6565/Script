@@ -466,102 +466,37 @@ local Button = Tab:Button({
     Desc = "",
     Locked = false,
     Callback = function()
-        --// Bring All Morsel to Campfire
-local plr = game.Players.LocalPlayer
-local hrp = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
-if not hrp then return end
+        --// Bring All Morsel + Steak to Campfire
+        local plr = game.Players.LocalPlayer
+        local hrp = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
+        if not hrp then return end
 
--- Tìm lửa trại
-local campfire = Workspace.Map.Campground:FindFirstChild("MainFire")  -- hoặc đổi tên nếu trong game khác
-if not campfire or not campfire.PrimaryPart then
-    warn("Không tìm thấy lửa trại!")
-    return
-end
+        -- Tìm lửa trại
+        local campfire = workspace.Map.Campground:FindFirstChild("MainFire")
+        if not campfire or not campfire.PrimaryPart then
+            warn("Không tìm thấy lửa trại!")
+            return
+        end
 
--- Loop qua tất cả items
-for _, item in ipairs(workspace.Items:GetChildren()) do
-    if item:IsA("Model") and item.PrimaryPart and string.find(item.Name, "Morsel") then
-        -- Start dragging
-        game.ReplicatedStorage.RemoteEvents.RequestStartDraggingItem:FireServer(item)
+        -- Loop qua tất cả items
+        for _, item in ipairs(workspace.Items:GetChildren()) do
+            if item:IsA("Model") and item.PrimaryPart and 
+               (string.find(item.Name, "Morsel") or string.find(item.Name, "Steak")) then
+               
+                -- Start dragging
+                game.ReplicatedStorage.RemoteEvents.RequestStartDraggingItem:FireServer(item)
 
-        -- Đặt item phía trên lửa trại (2 studs trên)
-        local targetCFrame = campfire.PrimaryPart.CFrame * CFrame.new(0, 8, 0)
-        item:PivotTo(targetCFrame)
+                -- Đặt item phía trên lửa trại (2 studs trên)
+                local targetCFrame = campfire.PrimaryPart.CFrame * CFrame.new(0, 8, 0)
+                item:PivotTo(targetCFrame)
 
-        -- Stop dragging
-        game.ReplicatedStorage.RemoteEvents.StopDraggingItem:FireServer(item)
-    end
-end
-    end
-})
-
--- Tabs 2
-
-_G.BringItem = false
-local savedPositionItem
-local selectedItem = "Morsel"
-
--- Dropdown
-local Dropdown = Tab2:Dropdown({
-    Title = "Select Item",
-    Values = { 
-        "Morsel", "Steak", "Carrot", "Berry", 
-        "Chain", "Metal Chain", "Log", "Coal", 
-        "Fuel Canister", "Oil Barrel", "Cultist", 
-        "Shotgun Ammo", "Revolver Ammo", "Rifle Ammo"
-    },
-    Value = "Morsel",
-    Callback = function(option) 
-        selectedItem = option
-        print("Selected: " .. option)
-    end
-})
-
--- Bring ON
-local BringOn = Tab2:Button({
-    Title = "Bring Item",
-    Desc = "Bring selected item",
-    Locked = false,
-    Callback = function()
-        if _G.BringItem then return end
-        _G.BringItem = true
-        savedPositionItem = hrp.CFrame
-
-        task.spawn(function()
-            while _G.BringItem do
-                for _, item in ipairs(workspace.Items:GetChildren()) do
-                    if not _G.BringItem then break end
-                    if item:IsA("Model") and item.PrimaryPart and item.Name == selectedItem then
-                        hrp.CFrame = item.PrimaryPart.CFrame + Vector3.new(0,3,0)
-                        task.wait(0.2)
-                        requestDrag:FireServer(item)
-                        task.wait(0.1)
-                        item:PivotTo(savedPositionItem * CFrame.new(0,3,0))
-                        task.wait(0.1)
-                        stopDrag:FireServer(item)
-                        task.wait(0.2)
-                    end
-                end
-                task.wait(1)
+                -- Stop dragging
+                game.ReplicatedStorage.RemoteEvents.StopDraggingItem:FireServer(item)
             end
-        end)
-    end
-})
-
--- Bring OFF
-local BringOff = Tab2:Button({
-    Title = "Stop Bring",
-    Desc = "Stop bring item",
-    Locked = false,
-    Callback = function()
-        _G.BringItem = false
-        if savedPositionItem then
-            hrp.CFrame = savedPositionItem
         end
     end
 })
-
-
+-- Tabs 2
 local Section = Tab2:Section({ 
     Title = "Fuel",
     TextXAlignment = "Left",
@@ -920,8 +855,191 @@ local ToolsOff = Tab2:Button({
     end
 })
 
+local Section = Tab3:Section({ 
+    Title = "Others",
+    TextXAlignment = "Left",
+    TextSize = 17, -- Default Size
+})
 
-local Section = Tab:Section({ 
+_G.BringLog = false
+local savedPosition
+
+local function bringLogs()
+    local player = game.Players.LocalPlayer
+    local hrp = player.Character and player.Character:WaitForChild("HumanoidRootPart")
+    if not hrp then return end
+
+    savedPosition = hrp.CFrame
+
+    task.spawn(function()
+        while _G.BringLog do
+            for _, item in ipairs(workspace.Items:GetChildren()) do
+                if not _G.BringLog then break end
+                if item:IsA("Model") and item.PrimaryPart and item.Name == "Log" then
+                    -- Teleport tới log
+                    hrp.CFrame = item.PrimaryPart.CFrame + Vector3.new(0, 3, 0)
+                    task.wait(0.2)
+
+                    -- Kéo về
+                    requestDrag:FireServer(item)
+                    task.wait(0.1)
+                    item:PivotTo(savedPosition * CFrame.new(0, 3, 0))
+                    task.wait(0.1)
+                    stopDrag:FireServer(item)
+                    task.wait(0.2)
+                end
+            end
+            task.wait(1)
+        end
+    end)
+end
+
+-- Nút Bring Log
+local ButtonOn = Tab:Button({
+    Title = "Bring Log",
+    Desc = "Bring all Logs",
+    Callback = function()
+        if _G.BringLog then return end
+        _G.BringLog = true
+        bringLogs()
+    end
+})
+
+_G.BringCoal = false
+local savedPosition
+
+local function bringCoal()
+    local player = game.Players.LocalPlayer
+    local hrp = player.Character and player.Character:WaitForChild("HumanoidRootPart")
+    if not hrp then return end
+
+    savedPosition = hrp.CFrame
+
+    task.spawn(function()
+        while _G.BringCoal do
+            for _, item in ipairs(workspace.Items:GetChildren()) do
+                if not _G.BringCoal then break end
+                if item:IsA("Model") and item.PrimaryPart and item.Name == "Coal" then
+                    -- Teleport tới Coal
+                    hrp.CFrame = item.PrimaryPart.CFrame + Vector3.new(0, 3, 0)
+                    task.wait(0.2)
+
+                    -- Kéo về
+                    requestDrag:FireServer(item)
+                    task.wait(0.1)
+                    item:PivotTo(savedPosition * CFrame.new(0, 3, 0))
+                    task.wait(0.1)
+                    stopDrag:FireServer(item)
+                    task.wait(0.2)
+                end
+            end
+            task.wait(1)
+        end
+    end)
+end
+
+-- Nút Bring Coal
+local ButtonOn = Tab2:Button({
+    Title = "Bring Coal",
+    Desc = "Bring all Coal",
+    Callback = function()
+        if _G.BringCoal then return end
+        _G.BringCoal = true
+        bringCoal()
+    end
+})
+
+_G.BringMicrowave = false
+local savedPosition
+
+local function bringMicrowave()
+    local player = game.Players.LocalPlayer
+    local hrp = player.Character and player.Character:WaitForChild("HumanoidRootPart")
+    if not hrp then return end
+
+    savedPosition = hrp.CFrame
+
+    task.spawn(function()
+        while _G.BringMicrowave do
+            for _, item in ipairs(workspace.Items:GetChildren()) do
+                if not _G.BringMicrowave then break end
+                if item:IsA("Model") and item.PrimaryPart and item.Name == "Broken Microwave" then
+                    -- Teleport tới Broken Microwave
+                    hrp.CFrame = item.PrimaryPart.CFrame + Vector3.new(0, 3, 0)
+                    task.wait(0.2)
+
+                    -- Kéo về
+                    requestDrag:FireServer(item)
+                    task.wait(0.1)
+                    item:PivotTo(savedPosition * CFrame.new(0, 3, 0))
+                    task.wait(0.1)
+                    stopDrag:FireServer(item)
+                    task.wait(0.2)
+                end
+            end
+            task.wait(1)
+        end
+    end)
+end
+
+-- Nút Bring Broken Microwave
+local ButtonOn = Tab2:Button({
+    Title = "Bring Broken Microwave",
+    Desc = "Bring all Broken Microwaves",
+    Callback = function()
+        if _G.BringMicrowave then return end
+        _G.BringMicrowave = true
+        bringMicrowave()
+    end
+})
+
+_G.BringSteak = false
+local savedPosition
+
+local function bringSteak()
+    local player = game.Players.LocalPlayer
+    local hrp = player.Character and player.Character:WaitForChild("HumanoidRootPart")
+    if not hrp then return end
+
+    savedPosition = hrp.CFrame
+
+    task.spawn(function()
+        while _G.BringSteak do
+            for _, item in ipairs(workspace.Items:GetChildren()) do
+                if not _G.BringSteak then break end
+                if item:IsA("Model") and item.PrimaryPart and item.Name == "Steak" then
+                    -- Teleport tới Steak
+                    hrp.CFrame = item.PrimaryPart.CFrame + Vector3.new(0, 3, 0)
+                    task.wait(0.2)
+
+                    -- Kéo về
+                    requestDrag:FireServer(item)
+                    task.wait(0.1)
+                    item:PivotTo(savedPosition * CFrame.new(0, 3, 0))
+                    task.wait(0.1)
+                    stopDrag:FireServer(item)
+                    task.wait(0.2)
+                end
+            end
+            task.wait(1)
+        end
+    end)
+end
+
+-- Nút Bring Steak
+local ButtonOn = Tab2:Button({
+    Title = "Bring Steak",
+    Desc = "Bring all Steaks",
+    Callback = function()
+        if _G.BringSteak then return end
+        _G.BringSteak = true
+        bringSteak()
+    end
+})
+
+
+
+local Section = Tab3:Section({ 
     Title = "Speed",
     TextXAlignment = "Left",
     TextSize = 17, -- Default Size
@@ -1400,6 +1518,7 @@ local Button = Tab6:Button({
         end
     end
 })
+
 
 
 
