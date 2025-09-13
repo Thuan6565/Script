@@ -1495,6 +1495,117 @@ local Toggle = Tab5:Toggle({
     end
 })
 
+local targetFood = {
+    ["Steak"] = true,
+    ["Carrot"] = true,
+    ["Berry"] = true,
+    ["Chili"] = true,
+    ["Morsel"] = true,
+    ["Stew"] = true,
+    ["Corn"] = true,
+    ["Pumpkin"] = true,
+    ["Apple"] = true,
+    ["Ribs"] = true,
+    ["Cake"] = true,
+    ["Hearty Stew"] = true,
+    ["Shark"] = true,
+    ["Swordfish"] = true,
+    ["Eel"] = true,
+    ["Char"] = true,
+    ["Mackerel"] = true,
+    ["Salmon"] = true,
+    ["Clownfish"] = true,
+}
+
+local ActiveFoodESP = false
+local connections = {}
+
+-- Highlight
+local function addHighlight(item)
+    if not item:IsA("Model") or not item.PrimaryPart then return end
+    if not item:FindFirstChild("FoodHighlight") then
+        local hl = Instance.new("Highlight")
+        hl.Name = "FoodHighlight"
+        hl.FillColor = Color3.fromRGB(0, 255, 0) -- xanh lá
+        hl.OutlineColor = Color3.fromRGB(0, 0, 0)
+        hl.FillTransparency = 0.5
+        hl.OutlineTransparency = 0
+        hl.Adornee = item
+        hl.Parent = item.PrimaryPart
+    end
+end
+
+-- Billboard
+local function addBillboard(item)
+    if not item:IsA("Model") or not item.PrimaryPart then return end
+    if not item:FindFirstChild("FoodBillboard") then
+        local billboard = Instance.new("BillboardGui")
+        billboard.Name = "FoodBillboard"
+        billboard.Adornee = item.PrimaryPart
+        billboard.Size = UDim2.new(0, 200, 0, 50)
+        billboard.StudsOffset = Vector3.new(0, 3, 0)
+        billboard.AlwaysOnTop = true
+        billboard.Parent = item
+
+        local text = Instance.new("TextLabel")
+        text.Size = UDim2.new(1, 0, 1, 0)
+        text.BackgroundTransparency = 1
+        text.Text = item.Name
+        text.TextColor3 = Color3.fromRGB(255, 255, 255)
+        text.TextStrokeColor3 = Color3.fromRGB(0, 0, 0) -- viền đen
+        text.TextStrokeTransparency = 0 -- viền hiện rõ
+        text.TextSize = 14 -- chữ cố định, không phóng to
+        text.Font = Enum.Font.SourceSansBold
+        text.Parent = billboard
+    end
+end
+
+-- Xử lý item
+local function handleItem(item)
+    if targetFood[item.Name] then
+        addHighlight(item)
+        addBillboard(item)
+    end
+end
+
+-- Bật/tắt ESP
+local function setFoodESP(state)
+    ActiveFoodESP = state
+    if state then
+        for _, item in ipairs(workspace.Items:GetChildren()) do
+            handleItem(item)
+        end
+        connections["childAdded"] = workspace.Items.ChildAdded:Connect(function(item)
+            task.wait(0.2)
+            handleItem(item)
+        end)
+    else
+        for _, item in ipairs(workspace.Items:GetChildren()) do
+            if item:FindFirstChild("FoodHighlight") then
+                item.FoodHighlight:Destroy()
+            end
+            if item:FindFirstChild("FoodBillboard") then
+                item.FoodBillboard:Destroy()
+            end
+        end
+        if connections["childAdded"] then
+            connections["childAdded"]:Disconnect()
+            connections["childAdded"] = nil
+        end
+    end
+end
+
+-- Toggle trong library
+local Toggle = Tab5:Toggle({
+    Title = "Food ESP",
+    Description = "",
+    Default = false,
+    Callback = function(state)
+        setFoodESP(state)
+        print("Food ESP:", state)
+    end
+})
+
 
 local Lighting = game:GetService("Lighting")
 local FullBrightConnection
@@ -1545,6 +1656,7 @@ local Button = Tab6:Button({
         end
     end
 })
+
 
 
 
