@@ -1495,6 +1495,13 @@ local Toggle = Tab5:Toggle({
     end
 })
 
+
+local Section = Tab5:Section({ 
+    Title = "Food",
+    TextXAlignment = "Left",
+    TextSize = 17, -- Default Size
+})
+
 local targetFood = {
     ["Steak"] = true,
     ["Carrot"] = true,
@@ -1656,6 +1663,7 @@ local Button = Tab6:Button({
         end
     end
 })
+
 
 
 
