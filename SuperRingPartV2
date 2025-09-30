@@ -199,7 +199,7 @@ Watermark.BorderSizePixel = 0
 Watermark.Position = UDim2.new(0, 0, 0.826388896, 0)
 Watermark.Size = UDim2.new(0, 264, 0, 25)
 Watermark.Font = Enum.Font.SourceSans
-Watermark.Text = "Super Ring Part V1 By Rip_IKASI"
+Watermark.Text = "Super Ring Part V2 By Rip_IKASI"
 Watermark.TextColor3 = Color3.fromRGB(0, 0, 0)
 Watermark.TextSize = 14.000
 
