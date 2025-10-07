@@ -65,6 +65,13 @@ local Tab6 = Window:Tab({
     Icon = "box",
     Locked = false,
 })
+
+local Tab7 = Window:Tab({
+    Title = "Mobs",
+    Icon = "box",
+    Locked = false,
+})
+
 --Windows
 Window:Tag({
     Title = "v1.0.0",
@@ -1664,6 +1671,367 @@ local Button = Tab6:Button({
     end
 })
 
+local Button = Tab7:Button({
+    Title = "Anti-Wolf Gui",
+    Desc = "",
+    Locked = false,
+    Callback = function()
+         -- AntiWolfBring.lua
+-- LocalScript: quét workspace.Characters, "bring" mọi Wolf tới (0,10,0) hoặc phía trên player và giữ cố định.
+-- Đặt trong StarterPlayer > StarterPlayerScripts
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
+local StarterGui = game:GetService("StarterGui")
+
+local player = Players.LocalPlayer
+
+-- Cấu hình
+local CHARACTERS_FOLDER = "Characters" -- folder chứa các NPC/player models; nếu khác, đổi tên
+local WOLF_NAME = "wolf" or "Bear"          -- tìm model có tên chứa chuỗi này (case-insensitive)
+local HOLD_ABOVE_PLAYER = true        -- nếu true: giữ sói phía trên player; nếu false: giữ ở COORD_HOLD
+local COORD_HOLD = Vector3.new(0, 10, 0) -- vị trí mặc định khi HOLD_ABOVE_PLAYER = false
+local MAINTAIN_RATE = 0.03           -- thời gian giữa lần ép CFrame (giữ chặt) (giây)
+
+-- internal storage để restore
+local tracked = {} -- map: model -> {parts = {part -> {Anchored,CanCollide,CFrame}}, moved = true/false}
+
+local enabled = false
+
+-- helper: kiểm tra model là wolf
+local function isWolfModel(m)
+    if not m or not m:IsA("Model") then return false end
+    local name = tostring(m.Name):lower()
+    if string.find(name, WOLF_NAME, 1, true) then
+        return true
+    end
+    return false
+end
+
+-- helper: collect all baseparts of model
+local function collectParts(model)
+    local parts = {}
+    for _, d in ipairs(model:GetDescendants()) do
+        if d:IsA("BasePart") then
+            table.insert(parts, d)
+        end
+    end
+    return parts
+end
+
+-- lưu trạng thái gốc cho model (chỉ lưu lần đầu)
+local function saveOriginalState(model)
+    if tracked[model] then return end
+    local info = {parts = {}, model = model, primaryCFrame = nil}
+    local parts = collectParts(model)
+    for _, p in ipairs(parts) do
+        info.parts[p] = {
+            Anchored = p.Anchored,
+            CanCollide = p.CanCollide,
+            CFrame = p.CFrame
+        }
+    end
+    -- try store model primary cframe as convenience
+    if model.PrimaryPart then
+        info.primaryCFrame = model:GetPrimaryPartCFrame()
+    else
+        info.primaryCFrame = nil
+    end
+    tracked[model] = info
+end
+
+-- restore original state for single model
+local function restoreModel(model)
+    local info = tracked[model]
+    if not info then return end
+    pcall(function()
+        for part, props in pairs(info.parts) do
+            if part and part.Parent then
+                if props.CFrame then
+                    -- try restore position (pcall to avoid errors if server denies)
+                    pcall(function() part.CFrame = props.CFrame end)
+                end
+                part.Anchored = props.Anchored
+                part.CanCollide = props.CanCollide
+            end
+        end
+        -- if we saved primaryCFrame, try to set back
+        if info.primaryCFrame and model.PrimaryPart then
+            pcall(function() model:SetPrimaryPartCFrame(info.primaryCFrame) end)
+        end
+    end)
+    tracked[model] = nil
+end
+
+-- bring model to targetCFrame (try PrimaryPart or set each part.CFrame offset)
+local function setModelCFrame(model, targetCFrame)
+    if not model or not model.Parent then return end
+    pcall(function()
+        if model.PrimaryPart then
+            model:SetPrimaryPartCFrame(targetCFrame)
+        else
+            -- naive: move each part relative to model's primary bounding center
+            local parts = collectParts(model)
+            -- compute model center average
+            local center = Vector3.new(0,0,0)
+            local n = 0
+            for _, p in ipairs(parts) do
+                center = center + p.Position
+                n = n + 1
+            end
+            if n == 0 then return end
+            center = center / n
+            for _, p in ipairs(parts) do
+                -- keep relative offset
+                local offset = p.Position - center
+                p.CFrame = CFrame.new(targetCFrame.Position + offset) * (p.CFrame - p.CFrame.Position) -- preserve rotation
+            end
+        end
+    end)
+end
+
+-- neutralize physics for model (anchor parts, disable collisions)
+local function neutralizeModel(model)
+    saveOriginalState(model)
+    for part, _ in pairs(tracked[model].parts) do
+        if part and part.Parent then
+            pcall(function()
+                part.Anchored = true
+                part.CanCollide = false
+            end)
+        end
+    end
+end
+
+-- bring all wolves to target location or above player and keep them there
+local function bringAndHoldAll()
+    -- choose target base position
+    local targetPos
+    if HOLD_ABOVE_PLAYER and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        local hrp = player.Character.HumanoidRootPart
+        targetPos = hrp.Position + Vector3.new(0, 10, 0)
+    else
+        targetPos = COORD_HOLD
+    end
+    local charsFolder = Workspace:FindFirstChild(CHARACTERS_FOLDER) or Workspace
+    for _, m in ipairs(charsFolder:GetChildren()) do
+        if isWolfModel(m) then
+            saveOriginalState(m)
+            neutralizeModel(m)
+            -- set initial position (we use model primary or parts)
+            local targetCFrame = CFrame.new(targetPos)
+            setModelCFrame(m, targetCFrame)
+            -- mark moved
+            if tracked[m] then tracked[m].moved = true end
+        end
+    end
+end
+
+-- continuously enforce position while enabled (loop)
+local holdConnection
+local function startHoldLoop()
+    if holdConnection then return end
+    holdConnection = RunService.Heartbeat:Connect(function(dt)
+        if not enabled then return end
+        local basePos
+        if HOLD_ABOVE_PLAYER and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            basePos = player.Character.HumanoidRootPart.Position + Vector3.new(0, 10, 0)
+        else
+            basePos = COORD_HOLD
+        end
+        local charsFolder = Workspace:FindFirstChild(CHARACTERS_FOLDER) or Workspace
+        for _, m in ipairs(charsFolder:GetChildren()) do
+            if isWolfModel(m) then
+                -- ensure neutralized
+                if not tracked[m] then
+                    saveOriginalState(m)
+                    for part, _ in pairs(tracked[m].parts) do
+                        pcall(function()
+                            part.Anchored = true
+                            part.CanCollide = false
+                        end)
+                    end
+                    tracked[m].moved = true
+                end
+                -- compute target with spacing (so multiple wolves don't overlap exactly)
+                local offsetIndex = 0
+                -- simple offset based on instance id to reduce overlap
+                local hash = math.abs(tonumber(tostring(m:GetDebugId())) or 0)
+                offsetIndex = (hash % 6) - 3
+                local target = CFrame.new(basePos + Vector3.new(offsetIndex*2, 0, 0))
+                -- push model there
+                pcall(function() setModelCFrame(m, target) end)
+            end
+        end
+    end)
+end
+
+local function stopHoldLoop()
+    if holdConnection then
+        holdConnection:Disconnect()
+        holdConnection = nil
+    end
+end
+
+-- release all wolves (restore original states)
+local function releaseAll()
+    for model, _ in pairs(tracked) do
+        pcall(function() restoreModel(model) end)
+    end
+    tracked = {}
+end
+
+-- scan once: bring + neutralize any wolves discovered
+local function scanOnce()
+    bringAndHoldAll()
+end
+
+-- ========== GUI ==========
+
+local function createGUI()
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "AntiWolfBringGUI"
+    screenGui.ResetOnSpawn = false
+    screenGui.Parent = player:WaitForChild("PlayerGui")
+
+    local main = Instance.new("Frame", screenGui)
+    main.Size = UDim2.new(0, 300, 0, 140)
+    main.Position = UDim2.new(0, 12, 0, 12)
+    main.BackgroundColor3 = Color3.fromRGB(30,30,30)
+    main.BackgroundTransparency = 0.12
+    main.BorderSizePixel = 0
+
+    local title = Instance.new("TextLabel", main)
+    title.Size = UDim2.new(1, -12, 0, 28)
+    title.Position = UDim2.new(0, 6, 0, 6)
+    title.BackgroundTransparency = 1
+    title.Text = "Anti-Wolf: Bring & Hold"
+    title.TextColor3 = Color3.new(1,1,1)
+    title.Font = Enum.Font.SourceSansBold
+    title.TextSize = 18
+    title.TextXAlignment = Enum.TextXAlignment.Left
+
+    local toggleBtn = Instance.new("TextButton", main)
+    toggleBtn.Size = UDim2.new(0, 140, 0, 34)
+    toggleBtn.Position = UDim2.new(0, 6, 0, 40)
+    toggleBtn.Text = "Enable"
+    toggleBtn.Font = Enum.Font.SourceSans
+    toggleBtn.TextSize = 16
+    toggleBtn.BackgroundColor3 = Color3.fromRGB(70,70,70)
+    toggleBtn.TextColor3 = Color3.new(1,1,1)
+
+    local modeBtn = Instance.new("TextButton", main)
+    modeBtn.Size = UDim2.new(0, 140, 0, 34)
+    modeBtn.Position = UDim2.new(0, 156, 0, 40)
+    modeBtn.Text = HOLD_ABOVE_PLAYER and "Mode: Above Player" or ("Mode: "..tostring(COORD_HOLD))
+    modeBtn.Font = Enum.Font.SourceSans
+    modeBtn.TextSize = 14
+    modeBtn.BackgroundColor3 = Color3.fromRGB(70,70,70)
+    modeBtn.TextColor3 = Color3.new(1,1,1)
+
+    local scanBtn = Instance.new("TextButton", main)
+    scanBtn.Size = UDim2.new(0, 140, 0, 28)
+    scanBtn.Position = UDim2.new(0, 6, 0, 84)
+    scanBtn.Text = "Scan Now"
+    scanBtn.Font = Enum.Font.SourceSans
+    scanBtn.TextSize = 14
+    scanBtn.BackgroundColor3 = Color3.fromRGB(80,80,80)
+    scanBtn.TextColor3 = Color3.new(1,1,1)
+
+    local releaseBtn = Instance.new("TextButton", main)
+    releaseBtn.Size = UDim2.new(0, 140, 0, 28)
+    releaseBtn.Position = UDim2.new(0, 156, 0, 84)
+    releaseBtn.Text = "Release All"
+    releaseBtn.Font = Enum.Font.SourceSans
+    releaseBtn.TextSize = 14
+    releaseBtn.BackgroundColor3 = Color3.fromRGB(80,80,80)
+    releaseBtn.TextColor3 = Color3.new(1,1,1)
+
+    local infoLabel = Instance.new("TextLabel", main)
+    infoLabel.Size = UDim2.new(1, -12, 0, 18)
+    infoLabel.Position = UDim2.new(0, 6, 1, -24)
+    infoLabel.BackgroundTransparency = 1
+    infoLabel.Font = Enum.Font.SourceSans
+    infoLabel.TextSize = 12
+    infoLabel.TextColor3 = Color3.fromRGB(200,200,200)
+    infoLabel.Text = "Note: client-side only. Server may correct positions."
+
+    -- handlers
+    toggleBtn.MouseButton1Click:Connect(function()
+        enabled = not enabled
+        if enabled then
+            toggleBtn.Text = "Disable"
+            -- perform initial scan/bring
+            scanOnce()
+            -- start hold loop
+            startHoldLoop()
+            StarterGui:SetCore("SendNotification", {Title="Anti-Wolf", Text="Bring & Hold ENABLED", Duration=2})
+        else
+            toggleBtn.Text = "Enable"
+            -- stop hold and restore
+            stopHoldLoop()
+            releaseAll()
+            StarterGui:SetCore("SendNotification", {Title="Anti-Wolf", Text="Bring & Hold DISABLED", Duration=2})
+        end
+    end)
+
+    modeBtn.MouseButton1Click:Connect(function()
+        HOLD_ABOVE_PLAYER = not HOLD_ABOVE_PLAYER
+        modeBtn.Text = HOLD_ABOVE_PLAYER and "Mode: Above Player" or ("Mode: "..tostring(COORD_HOLD))
+    end)
+
+    scanBtn.MouseButton1Click:Connect(function()
+        scanOnce()
+        StarterGui:SetCore("SendNotification", {Title="Anti-Wolf", Text="Manual scan executed", Duration=1.6})
+    end)
+
+    releaseBtn.MouseButton1Click:Connect(function()
+        stopHoldLoop()
+        releaseAll()
+        enabled = false
+        toggleBtn.Text = "Enable"
+        StarterGui:SetCore("SendNotification", {Title="Anti-Wolf", Text="Released all and disabled", Duration=2})
+    end)
+end
+
+-- initialize GUI
+createGUI()
+
+-- auto-scan new wolves added (so we can auto-neutralize them even if not holding)
+local charsFolder = Workspace:FindFirstChild(CHARACTERS_FOLDER) or Workspace
+charsFolder.DescendantAdded:Connect(function(desc)
+    if not enabled then return end
+    local m = desc
+    -- if a model added or a model containing "wolf" was created
+    if desc:IsA("Model") and isWolfModel(desc) then
+        saveOriginalState(desc)
+        neutralizeModel(desc)
+    else
+        -- if a descendant added under a wolf model
+        local parent = desc.Parent
+        while parent and parent ~= Workspace and parent ~= charsFolder do
+            if isWolfModel(parent) then
+                saveOriginalState(parent)
+                neutralizeModel(parent)
+                break
+            end
+            parent = parent.Parent
+        end
+    end
+end)
+
+-- cleanup on script stop / player leaving (best effort)
+player.AncestryChanged:Connect(function(_, parent)
+    if not parent then
+        stopHoldLoop()
+        releaseAll()
+    end
+end)
+
+print("[AntiWolfBring] Loaded. Use GUI to enable/disable. Client-side only.")
+        end
+    })
 
 
 
