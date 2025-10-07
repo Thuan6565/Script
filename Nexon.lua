@@ -1689,7 +1689,7 @@ local player = Players.LocalPlayer
 
 -- Cấu hình
 local CHARACTERS_FOLDER = "Characters" -- folder chứa các NPC/player models; nếu khác, đổi tên
-local WOLF_NAME = "wolf" or "Bear"          -- tìm model có tên chứa chuỗi này (case-insensitive)
+local WOLF_NAME = {"wolf", "Bear"}-- tìm model có tên chứa chuỗi này (case-insensitive)
 local HOLD_ABOVE_PLAYER = true        -- nếu true: giữ sói phía trên player; nếu false: giữ ở COORD_HOLD
 local COORD_HOLD = Vector3.new(0, 10, 0) -- vị trí mặc định khi HOLD_ABOVE_PLAYER = false
 local MAINTAIN_RATE = 0.03           -- thời gian giữa lần ép CFrame (giữ chặt) (giây)
@@ -2032,6 +2032,7 @@ end)
 print("[AntiWolfBring] Loaded. Use GUI to enable/disable. Client-side only.")
         end
     })
+
 
 
 
