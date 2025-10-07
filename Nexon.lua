@@ -1901,12 +1901,13 @@ local function createGUI()
     main.BackgroundColor3 = Color3.fromRGB(30,30,30)
     main.BackgroundTransparency = 0.12
     main.BorderSizePixel = 0
+    main.Draggable = true
 
     local title = Instance.new("TextLabel", main)
     title.Size = UDim2.new(1, -12, 0, 28)
     title.Position = UDim2.new(0, 6, 0, 6)
     title.BackgroundTransparency = 1
-    title.Text = "Anti-Wolf: Bring & Hold"
+    title.Text = "Nexon Anti-Wolf: Bring & Hold"
     title.TextColor3 = Color3.new(1,1,1)
     title.Font = Enum.Font.SourceSansBold
     title.TextSize = 18
@@ -2032,6 +2033,7 @@ end)
 print("[AntiWolfBring] Loaded. Use GUI to enable/disable. Client-side only.")
         end
     })
+
 
 
 
