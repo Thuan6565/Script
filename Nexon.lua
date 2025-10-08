@@ -1957,6 +1957,7 @@ local function createGUI()
     title.Font = Enum.Font.SourceSansBold
     title.TextSize = 18
     title.TextXAlignment = Enum.TextXAlignment.Left
+    title.Draggable = true
 
     local toggleBtn = Instance.new("TextButton", main)
     toggleBtn.Size = UDim2.new(0, 140, 0, 34)
@@ -2078,6 +2079,7 @@ end)
 print("[AntiWolfBring] Loaded. Use GUI to enable/disable. Client-side only.")
         end
     })
+
 
 
 
