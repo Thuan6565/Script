@@ -895,10 +895,10 @@ local Button = Tab2:Button({
     end
 })
 
-_G.BringLog = false
+_G.BringSapling = false
 local savedPosition
 
-local function bringLogs()
+local function bringSaplings()
     local player = game.Players.LocalPlayer
     local hrp = player.Character and player.Character:WaitForChild("HumanoidRootPart")
     if not hrp then return end
@@ -906,9 +906,42 @@ local function bringLogs()
     savedPosition = hrp.CFrame
 
     task.spawn(function()
-        while _G.BringLog do
+        while _G.BringSapling do
             for _, item in ipairs(workspace.Items:GetChildren()) do
-                if not _G.BringLog then break end
+                if not _G.BringSapling then break end
+                if item:IsA("Model") and item.PrimaryPart and item.Name == "Sapling" then
+                    -- Teleport tới log
+                    
+                    task.wait(0.2)
+
+                    -- Kéo về
+                    requestDrag:FireServer(item)
+                    task.wait(0.1)
+                    item:PivotTo(savedPosition * CFrame.new(0, 3, 0))
+                    task.wait(0.1)
+                    stopDrag:FireServer(item)
+                    task.wait(0.2)
+                end
+            end
+            task.wait(1)
+        end
+    end)
+end
+
+_G.BringSapling = false
+local savedPosition
+
+local function bringSaplings()
+    local player = game.Players.LocalPlayer
+    local hrp = player.Character and player.Character:WaitForChild("HumanoidRootPart")
+    if not hrp then return end
+
+    savedPosition = hrp.CFrame
+
+    task.spawn(function()
+        while _G.BringSapling do
+            for _, item in ipairs(workspace.Items:GetChildren()) do
+                if not _G.BringSapling then break end
                 if item:IsA("Model") and item.PrimaryPart and item.Name == "Log" then
                     -- Teleport tới log
                     
@@ -930,7 +963,19 @@ end
 
 -- Nút Bring Log
 local ButtonOn = Tab2:Button({
-    Title = "Bring Log / Sapling",
+    Title = "Bring Sapling",
+    Desc = "Bring all Saplings",
+    Callback = function()
+        if _G.BringSapling then return end
+        _G.BringSapling = true
+        bringSaplings()
+    end
+})
+
+
+-- Nút Bring Log
+local ButtonOn = Tab2:Button({
+    Title = "Bring Logs",
     Desc = "Bring all Logs",
     Callback = function()
         if _G.BringLog then return end
@@ -2033,6 +2078,7 @@ end)
 print("[AntiWolfBring] Loaded. Use GUI to enable/disable. Client-side only.")
         end
     })
+
 
 
 
