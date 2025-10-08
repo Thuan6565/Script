@@ -930,7 +930,7 @@ end
 
 -- Nút Bring Log
 local ButtonOn = Tab2:Button({
-    Title = "Bring Log",
+    Title = "Bring Log / Sapling",
     Desc = "Bring all Logs",
     Callback = function()
         if _G.BringLog then return end
@@ -953,7 +953,7 @@ local function bringCoal()
         while _G.BringCoal do
             for _, item in ipairs(workspace.Items:GetChildren()) do
                 if not _G.BringCoal then break end
-                if item:IsA("Model") and item.PrimaryPart and item.Name == "Coal" then
+                if item:IsA("Model") and item.PrimaryPart and (item.Name == "Log" or item.Name == "Sapling") then
                     -- Teleport tới Coal
                     
                     task.wait(0.2)
@@ -2033,6 +2033,7 @@ end)
 print("[AntiWolfBring] Loaded. Use GUI to enable/disable. Client-side only.")
         end
     })
+
 
 
 
