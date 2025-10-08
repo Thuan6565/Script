@@ -1001,7 +1001,7 @@ local function bringCoal()
         while _G.BringCoal do
             for _, item in ipairs(workspace.Items:GetChildren()) do
                 if not _G.BringCoal then break end
-                if item:IsA("Model") and item.PrimaryPart and (item.Name == "Log" or item.Name == "Sapling") then
+                if item:IsA("Model") and item.PrimaryPart and item.Name == "Coal" then
                     -- Teleport tới Coal
                     
                     task.wait(0.2)
@@ -1992,7 +1992,7 @@ local function createGUI()
     local releaseBtn = Instance.new("TextButton", main)
     releaseBtn.Size = UDim2.new(0, 140, 0, 28)
     releaseBtn.Position = UDim2.new(0, 156, 0, 84)
-    releaseBtn.Text = "Release All"
+    releaseBtn.Text = "Close"
     releaseBtn.Font = Enum.Font.SourceSans
     releaseBtn.TextSize = 14
     releaseBtn.BackgroundColor3 = Color3.fromRGB(80,80,80)
@@ -2037,11 +2037,7 @@ local function createGUI()
     end)
 
     releaseBtn.MouseButton1Click:Connect(function()
-        stopHoldLoop()
-        releaseAll()
-        enabled = false
-        toggleBtn.Text = "Enable"
-        StarterGui:SetCore("SendNotification", {Title="Anti-Wolf", Text="Released all and disabled", Duration=2})
+        main.Visible = false
     end)
 end
 
@@ -2082,6 +2078,7 @@ end)
 print("[AntiWolfBring] Loaded. Use GUI to enable/disable. Client-side only.")
         end
     })
+
 
 
 
