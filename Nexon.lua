@@ -884,6 +884,7 @@ local Button = Tab2:Button({
         _G.BringCoal = false
         _G.BringMicrowave = false
         _G.BringSteak = false
+        _G.BringSapling = false
 
         -- trả về vị trí cũ nếu có lưu
         local player = game.Players.LocalPlayer
@@ -928,10 +929,22 @@ local function bringSaplings()
     end)
 end
 
-_G.BringSapling = false
+  
+-- Nút Bring Log
+local ButtonOn = Tab2:Button({
+    Title = "Bring Sapling",
+    Desc = "Bring all Saplings",
+    Callback = function()
+        if _G.BringSapling then return end
+        _G.BringSapling = true
+        bringSaplings()
+    end
+})
+
+_G.bringLog = false
 local savedPosition
 
-local function bringSaplings()
+local function bringLogs()
     local player = game.Players.LocalPlayer
     local hrp = player.Character and player.Character:WaitForChild("HumanoidRootPart")
     if not hrp then return end
@@ -939,9 +952,9 @@ local function bringSaplings()
     savedPosition = hrp.CFrame
 
     task.spawn(function()
-        while _G.BringSapling do
+        while _G.bringLog do
             for _, item in ipairs(workspace.Items:GetChildren()) do
-                if not _G.BringSapling then break end
+                if not _G.bringLog then break end
                 if item:IsA("Model") and item.PrimaryPart and item.Name == "Log" then
                     -- Teleport tới log
                     
@@ -961,28 +974,18 @@ local function bringSaplings()
     end)
 end
 
+  
 -- Nút Bring Log
 local ButtonOn = Tab2:Button({
-    Title = "Bring Sapling",
-    Desc = "Bring all Saplings",
-    Callback = function()
-        if _G.BringSapling then return end
-        _G.BringSapling = true
-        bringSaplings()
-    end
-})
-
-
--- Nút Bring Log
-local ButtonOn = Tab2:Button({
-    Title = "Bring Logs",
+    Title = "Bring Log",
     Desc = "Bring all Logs",
     Callback = function()
-        if _G.BringLog then return end
-        _G.BringLog = true
+        if _G.bringLog then return end
+        _G.bringLog = true
         bringLogs()
     end
 })
+
 
 _G.BringCoal = false
 local savedPosition
@@ -2079,6 +2082,7 @@ end)
 print("[AntiWolfBring] Loaded. Use GUI to enable/disable. Client-side only.")
         end
     })
+
 
 
 
