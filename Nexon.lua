@@ -28,6 +28,25 @@ local Window = WindUI:CreateWindow({
         end,
     },
 })
+
+local CoreGui = game:GetService("CoreGui")
+
+-- Lấy RobloxGui
+local RobloxGui = CoreGui:WaitForChild("RobloxGui")
+
+-- Xóa NotificationFrame nếu có
+local notifFrame = RobloxGui:FindFirstChild("NotificationFrame") or RobloxGui:FindFirstChild("SendNotificationInfo")
+if notifFrame then
+    notifFrame:Destroy()  -- hoặc notifFrame.Enabled = false để chỉ ẩn
+end
+
+-- Tự động ẩn nếu NotificationFrame được thêm lại
+RobloxGui.ChildAdded:Connect(function(child)
+    if child.Name == "NotificationFrame" then
+        child:Destroy()  -- hoặc child.Enabled = false
+    end
+end)
+
 --Tabs
 local Tab = Window:Tab({
     Title = "Fram",
@@ -82,6 +101,24 @@ local Section = Tab:Section({
     Title = "Days",
     TextXAlignment = "Left",
     TextSize = 17, -- Default Size
+})
+
+local Toggle = Tab3:Toggle({
+    Title = "God mode",
+    Desc = "infinite health",
+    Icon = "bird",
+    Type = "Toggle",
+    Default = false,
+    Callback = function(state) 
+            if state then
+        --[[
+	WARNING: Heads up! This script has not been verified by ScriptBlox. Use at your own risk!
+]]
+loadstring(game:HttpGet("https://raw.githubusercontent.com/ProBaconHub/DATABASE/refs/heads/main/99%20Nights%20in%20the%20Forest/Infinite%20Health.lua"))()
+        else
+            print("Of")
+            end
+    end
 })
 
 --// Dùng toggle trong Tab
@@ -2078,6 +2115,7 @@ end)
 print("[AntiWolfBring] Loaded. Use GUI to enable/disable. Client-side only.")
         end
     })
+
 
 
 
