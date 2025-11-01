@@ -45,7 +45,7 @@ Title.Text = "Super Ring Parts V3 by Ieyuks8 ( Rip_IKASI )"
 Title.TextColor3 = Color3.fromRGB(0, 0, 0)
 Title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 Title.Font = Enum.Font.Fondamento
-Title.TextSize = 22
+Title.TextSize = 15
 Title.Parent = MainFrame
 
 -- Round the title
@@ -102,6 +102,7 @@ local function createControl(name, positionY, color, labelText, defaultValue, ca
     DecreaseButton.Font = Enum.Font.Fondamento
     DecreaseButton.TextSize = 18
     DecreaseButton.Parent = MainFrame
+    DecreaseButton.Transparency = 1
 
     local IncreaseButton = Instance.new("TextButton")
     IncreaseButton.Size = UDim2.new(0.2, 0, 0, 40)
@@ -112,7 +113,8 @@ local function createControl(name, positionY, color, labelText, defaultValue, ca
     IncreaseButton.Font = Enum.Font.Fondamento
     IncreaseButton.TextSize = 18
     IncreaseButton.Parent = MainFrame
-
+    IncreaseButton.Transparency = 1
+    
     local Display = Instance.new("TextLabel")
     Display.Size = UDim2.new(0.4, 0, 0, 40)
     Display.Position = UDim2.new(0.3, 0, positionY, 0)
@@ -121,6 +123,7 @@ local function createControl(name, positionY, color, labelText, defaultValue, ca
     Display.TextColor3 = Color3.fromRGB(0, 0, 0)
     Display.Font = Enum.Font.Fondamento
     Display.TextSize = 18
+    Display.Transparency = 1
     Display.Parent = MainFrame
 
     -- Add TextBox for input
@@ -132,6 +135,7 @@ local function createControl(name, positionY, color, labelText, defaultValue, ca
     TextBox.TextColor3 = Color3.fromRGB(0, 0, 0)
     TextBox.Font = Enum.Font.Fondamento
     TextBox.TextSize = 18
+    Textbix.Text = " Value here "
     TextBox.Parent = MainFrame
 
     local TextBoxCorner = Instance.new("UICorner")
