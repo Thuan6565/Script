@@ -35,29 +35,29 @@ MainFrame.Parent = ScreenGui
 
 -- Make the GUI round
 local UICorner = Instance.new("UICorner")
-UICorner.CornerRadius = UDim.new(0, 20)
+UICorner.CornerRadius = UDim.new(0, 0.5)
 UICorner.Parent = MainFrame
 
 local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(1, 0, 0, 40)
 Title.Position = UDim2.new(0, 0, 0, 0)
-Title.Text = "Super Ring Parts V6 by lukas"
+Title.Text = "Super Ring Parts V3 by Ieyuks8 ( Rip_IKASI )"
 Title.TextColor3 = Color3.fromRGB(0, 0, 0)
-Title.BackgroundColor3 = Color3.fromRGB(0, 204, 204)
+Title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 Title.Font = Enum.Font.Fondamento
 Title.TextSize = 22
 Title.Parent = MainFrame
 
 -- Round the title
 local TitleCorner = Instance.new("UICorner")
-TitleCorner.CornerRadius = UDim.new(0, 20)
+TitleCorner.CornerRadius = UDim.new(0, 0.5)
 TitleCorner.Parent = Title
 
 local ToggleButton = Instance.new("TextButton")
 ToggleButton.Size = UDim2.new(0.8, 0, 0, 40)
 ToggleButton.Position = UDim2.new(0.1, 0, 0.1, 0)
 ToggleButton.Text = "Ring Off"
-ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 ToggleButton.TextColor3 = Color3.fromRGB(0, 0, 0)
 ToggleButton.Font = Enum.Font.Fondamento
 ToggleButton.TextSize = 18
@@ -65,7 +65,7 @@ ToggleButton.Parent = MainFrame
 
 -- Round the toggle button
 local ToggleCorner = Instance.new("UICorner")
-ToggleCorner.CornerRadius = UDim.new(0, 10)
+ToggleCorner.CornerRadius = UDim.new(0, 0.5)
 ToggleCorner.Parent = ToggleButton
 
 -- Configuration table
@@ -97,7 +97,7 @@ local function createControl(name, positionY, color, labelText, defaultValue, ca
     DecreaseButton.Size = UDim2.new(0.2, 0, 0, 40)
     DecreaseButton.Position = UDim2.new(0.1, 0, positionY, 0)
     DecreaseButton.Text = "-"
-    DecreaseButton.BackgroundColor3 = color
+    DecreaseButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     DecreaseButton.TextColor3 = Color3.fromRGB(0, 0, 0)
     DecreaseButton.Font = Enum.Font.Fondamento
     DecreaseButton.TextSize = 18
@@ -107,7 +107,7 @@ local function createControl(name, positionY, color, labelText, defaultValue, ca
     IncreaseButton.Size = UDim2.new(0.2, 0, 0, 40)
     IncreaseButton.Position = UDim2.new(0.7, 0, positionY, 0)
     IncreaseButton.Text = "+"
-    IncreaseButton.BackgroundColor3 = color
+    IncreaseButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     IncreaseButton.TextColor3 = Color3.fromRGB(0, 0, 0)
     IncreaseButton.Font = Enum.Font.Fondamento
     IncreaseButton.TextSize = 18
@@ -117,7 +117,7 @@ local function createControl(name, positionY, color, labelText, defaultValue, ca
     Display.Size = UDim2.new(0.4, 0, 0, 40)
     Display.Position = UDim2.new(0.3, 0, positionY, 0)
     Display.Text = labelText .. ": " .. defaultValue
-    Display.BackgroundColor3 = Color3.fromRGB(255, 153, 51)
+    Display.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     Display.TextColor3 = Color3.fromRGB(0, 0, 0)
     Display.Font = Enum.Font.Fondamento
     Display.TextSize = 18
@@ -128,7 +128,7 @@ local function createControl(name, positionY, color, labelText, defaultValue, ca
     TextBox.Size = UDim2.new(0.8, 0, 0, 35)
     TextBox.Position = UDim2.new(0.1, 0, positionY + 0.1, 0)
     TextBox.PlaceholderText = "Enter " .. labelText
-    TextBox.BackgroundColor3 = Color3.fromRGB(0, 0, 255)
+    TextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     TextBox.TextColor3 = Color3.fromRGB(0, 0, 0)
     TextBox.Font = Enum.Font.Fondamento
     TextBox.TextSize = 18
@@ -206,7 +206,7 @@ MinimizeButton.Parent = MainFrame
 
 -- Round the minimize button
 local MinimizeCorner = Instance.new("UICorner")
-MinimizeCorner.CornerRadius = UDim.new(0, 15)
+MinimizeCorner.CornerRadius = UDim.new(0, 0.5)
 MinimizeCorner.Parent = MinimizeButton
 
 -- Minimize functionality
@@ -408,7 +408,7 @@ end)
 -- Button functionality
 ToggleButton.MouseButton1Click:Connect(function()
     ringPartsEnabled = not ringPartsEnabled
-    ToggleButton.Text = ringPartsEnabled and "Tornado On" or "Tornado Off"
+    ToggleButton.Text = ringPartsEnabled and "RING On" or "RING Off"
     ToggleButton.BackgroundColor3 = ringPartsEnabled and Color3.fromRGB(50, 205, 50) or Color3.fromRGB(160, 82, 45)
     playSound("12221967")
 end)
@@ -420,257 +420,7 @@ local thumbSize = Enum.ThumbnailSize.Size420x420
 local content, isReady = Players:GetUserThumbnailAsync(userId, thumbType, thumbSize)
 
 StarterGui:SetCore("SendNotification", {
-    Title = "Hey",
-    Text = "Enjoy the Script!",
-    Icon = content,
+    Title = "FUCK QUORUM",
+    Text = "IEYUKS8 RIP_IKASI!",
     Duration = 5
 })
-
-StarterGui:SetCore("SendNotification", {
-    Title = "TIPS",
-    Text = "Click Textbox To edit Any of them",
-    Icon = content,
-    Duration = 5
-})
-
-StarterGui:SetCore("SendNotification", {
-    Title = "Credits",
-    Text = "On scriptblox!",
-    Icon = content,
-    Duration = 5
-})
-
-
--- Rainbow Background Effect
-local hue = 0
-RunService.Heartbeat:Connect(function()
-    hue = (hue + 0.01) % 1
-    MainFrame.BackgroundColor3 = Color3.fromHSV(hue, 1, 1)
-end)
-
--- Rainbow TextLabel
-local textHue = 0
-RunService.Heartbeat:Connect(function()
-    textHue = (textHue + 0.01) % 1
-    Title.TextColor3 = Color3.fromHSV(textHue, 1, 1)
-end)
-
-
--- fly gui
-
-local TextButton1 = Instance.new("TextButton") 
-TextButton1.Parent = MainFrame
-TextButton1.Name = "Fly gui"
-TextButton1.BackgroundColor3 = Color3.fromRGB(0,0,255)
-TextButton1.BackgroundTransparency = 0
-TextButton1.BorderSizePixel = 1
-TextButton1.BorderColor3 = Color3.fromRGB(17,17,17)
-TextButton1.Position = UDim2.new(1,0,1)
-TextButton1.Size = UDim2.new(0.08,0,0.1)
-TextButton1.Font = Enum.Font.Legacy
-TextButton1.TextColor3 = Color3.fromRGB(242,243,243)
-TextButton1.Text = "Fly Gui"
-TextButton1.TextSize = 18
-TextButton1.TextScaled = true
-TextButton1.TextWrapped = true
-TextButton1.Visible = true
-TextButton1.Active = true
-
-TextButton1.MouseButton1Click:Connect(function() 
-loadstring(game:HttpGet('https://pastebin.com/raw/YSL3xKYU'))()
-end)
-
--- no fall damage
-local TextButton1 = Instance.new("TextButton") 
-TextButton1.Parent = MainFrame
-TextButton1.Name = "no fall damage"
-TextButton1.BackgroundColor3 = Color3.fromRGB(255,0,0)
-TextButton1.BackgroundTransparency = 0
-TextButton1.BorderSizePixel = 1
-TextButton1.BorderColor3 = Color3.fromRGB(17,17,17)
-TextButton1.Position = UDim2.new(0.9,0,1)
-TextButton1.Size = UDim2.new(0.08,0,0.1)
-TextButton1.Font = Enum.Font.Legacy
-TextButton1.TextColor3 = Color3.fromRGB(242,243,243)
-TextButton1.Text = "No fall Damage"
-TextButton1.TextSize = 18
-TextButton1.TextScaled = true
-TextButton1.TextWrapped = true
-TextButton1.Visible = true
-TextButton1.Active = true
-
-TextButton1.MouseButton1Click:Connect(function() 
--- No Fall Damage by Pio (Discord: piomanly or ID: 311397526399877122) --
-local runsvc = game:GetService("RunService")
-local heartbeat = runsvc.Heartbeat
-local rstepped = runsvc.RenderStepped
-
-local lp = game.Players.LocalPlayer
-
-local novel = Vector3.zero
-
-local function nofalldamage(chr)
-    local root = chr:WaitForChild("HumanoidRootPart")
-    
-    if root then
-        local con
-        con = heartbeat:Connect(function()
-            if not root.Parent then
-                con:Disconnect()
-            end
-            
-            local oldvel = root.AssemblyLinearVelocity
-            root.AssemblyLinearVelocity = novel
-            
-            rstepped:Wait()
-            root.AssemblyLinearVelocity = oldvel
-        end)
-    end
-end
-
-nofalldamage(lp.Character)
-    lp.CharacterAdded:Connect(nofalldamage)
-end)
-
--- noclip
-local TextButton1 = Instance.new("TextButton") 
-TextButton1.Parent = MainFrame
-TextButton1.Name = "noclip"
-TextButton1.BackgroundColor3 = Color3.fromRGB(0,0,0)
-TextButton1.BackgroundTransparency = 0
-TextButton1.BorderSizePixel = 1
-TextButton1.BorderColor3 = Color3.fromRGB(17,17,17)
-TextButton1.Position = UDim2.new(0.8,0,1)
-TextButton1.Size = UDim2.new(0.08,0,0.1)
-TextButton1.Font = Enum.Font.Legacy
-TextButton1.TextColor3 = Color3.fromRGB(242,243,243)
-TextButton1.Text = "Noclip"
-TextButton1.TextSize = 18
-TextButton1.TextScaled = true
-TextButton1.TextWrapped = true
-TextButton1.Visible = true
-TextButton1.Active = true
-
-TextButton1.MouseButton1Click:Connect(function() 
-local Noclip = nil
-local Clip = nil
-
-function noclip()
-	Clip = false
-	local function Nocl()
-		if Clip == false and game.Players.LocalPlayer.Character ~= nil then
-			for _,v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
-				if v:IsA('BasePart') and v.CanCollide and v.Name ~= floatName then
-					v.CanCollide = false
-				end
-			end
-		end
-		wait(0.21) -- basic optimization
-	end
-	Noclip = game:GetService('RunService').Stepped:Connect(Nocl)
-end
-
-function clip()
-	if Noclip then Noclip:Disconnect() end
-	Clip = true
-end
-
-noclip() -- to toggle noclip() and clip()
-end)
-
--- Inf jump
-
-local TextButton1 = Instance.new("TextButton") 
-TextButton1.Parent = MainFrame
-TextButton1.Name = "Inf jump"
-TextButton1.BackgroundColor3 = Color3.fromRGB(0,255,0)
-TextButton1.BackgroundTransparency = 0
-TextButton1.BorderSizePixel = 1
-TextButton1.BorderColor3 = Color3.fromRGB(17,17,17)
-TextButton1.Position = UDim2.new(0.7,0,1)
-TextButton1.Size = UDim2.new(0.08,0,0.1)
-TextButton1.Font = Enum.Font.Legacy
-TextButton1.TextColor3 = Color3.fromRGB(242,243,243)
-TextButton1.Text = "Inf jump"
-TextButton1.TextSize = 18
-TextButton1.TextScaled = true
-TextButton1.TextWrapped = true
-TextButton1.Visible = true
-TextButton1.Active = true
-
-TextButton1.MouseButton1Click:Connect(function() 
-local InfiniteJumpEnabled = true game:GetService("UserInputService").JumpRequest:connect(function() 	if InfiniteJumpEnabled then 		game:GetService"Players".LocalPlayer.Character:FindFirstChildOfClass'Humanoid':ChangeState("Jumping") 	end end)
-end)
-
--- Inf yield
-
-local TextButton1 = Instance.new("TextButton") 
-TextButton1.Parent = MainFrame
-TextButton1.Name = "Inf yield"
-TextButton1.BackgroundColor3 = Color3.fromRGB(0,255,255)
-TextButton1.BackgroundTransparency = 0
-TextButton1.BorderSizePixel = 1
-TextButton1.BorderColor3 = Color3.fromRGB(17,17,17)
-TextButton1.Position = UDim2.new(0.6,0,1)
-TextButton1.Size = UDim2.new(0.08,0,0.1)
-TextButton1.Font = Enum.Font.Legacy
-TextButton1.TextColor3 = Color3.fromRGB(242,243,243)
-TextButton1.Text = "Inf yield"
-TextButton1.TextSize = 18
-TextButton1.TextScaled = true
-TextButton1.TextWrapped = true
-TextButton1.Visible = true
-TextButton1.Active = true
-
-TextButton1.MouseButton1Click:Connect(function() 
-loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
-end)
-
--- nameless admin
-
-local TextButton1 = Instance.new("TextButton") 
-TextButton1.Parent = MainFrame
-TextButton1.Name = "nameless admin"
-TextButton1.BackgroundColor3 = Color3.fromRGB(0,0,0)
-TextButton1.BackgroundTransparency = 0
-TextButton1.BorderSizePixel = 1
-TextButton1.BorderColor3 = Color3.fromRGB(17,17,17)
-TextButton1.Position = UDim2.new(0.5,0,1)
-TextButton1.Size = UDim2.new(0.08,0,0.1)
-TextButton1.Font = Enum.Font.Legacy
-TextButton1.TextColor3 = Color3.fromRGB(242,243,243)
-TextButton1.Text = "NAMELESS"
-TextButton1.TextSize = 18
-TextButton1.TextScaled = true
-TextButton1.TextWrapped = true
-TextButton1.Visible = true
-TextButton1.Active = true
-
-TextButton1.MouseButton1Click:Connect(function() 
-loadstring(game:HttpGet("https://scriptblox.com/raw/Universal-Script-Nameless-Admin-FE-11243"))()
-end)
-
--- fps
-
-local TextButton1 = Instance.new("TextButton") 
-TextButton1.Parent = MainFrame
-TextButton1.Name = "FPS"
-TextButton1.BackgroundColor3 = Color3.fromRGB(0,0,0)
-TextButton1.BackgroundTransparency = 0
-TextButton1.BorderSizePixel = 1
-TextButton1.BorderColor3 = Color3.fromRGB(17,17,17)
-TextButton1.Position = UDim2.new(0.4,0,1)
-TextButton1.Size = UDim2.new(0.08,0,0.1)
-TextButton1.Font = Enum.Font.Legacy
-TextButton1.TextColor3 = Color3.fromRGB(242,243,243)
-TextButton1.Text = "FPS"
-TextButton1.TextSize = 18
-TextButton1.TextScaled = true
-TextButton1.TextWrapped = true
-TextButton1.Visible = true
-TextButton1.Active = true
-
-TextButton1.MouseButton1Click:Connect(function() 
-loadstring(game:HttpGet("https://pastebin.com/raw/ySHJdZpb",true))()
-end)
--- Just that enjoy skidding this lol
