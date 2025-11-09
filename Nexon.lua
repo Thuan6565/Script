@@ -587,8 +587,6 @@ local FuelOn = Tab2:Button({
                 for _, item in ipairs(workspace.Items:GetChildren()) do
                     if not _G.BringFuel then break end
                     if item:IsA("Model") and item.PrimaryPart and targetFuel[item.Name] then
-                        hrp.CFrame = item.PrimaryPart.CFrame + Vector3.new(0,3,0)
-                        task.wait(0.2)
                         requestDrag:FireServer(item)
                         task.wait(0.1)
                         item:PivotTo(savedPositionFuel * CFrame.new(0,3,0))
@@ -611,7 +609,7 @@ local FuelOff = Tab2:Button({
     Callback = function()
         _G.BringFuel = false
         if savedPositionFuel then
-            hrp.CFrame = savedPositionFuel
+            print("Stop Bring")
         end
     end
 })
@@ -659,8 +657,6 @@ local MetalOn = Tab2:Button({
                 for _, item in ipairs(workspace.Items:GetChildren()) do
                     if not _G.BringMetal then break end
                     if item:IsA("Model") and item.PrimaryPart and targetMetal[item.Name] then
-                        hrp.CFrame = item.PrimaryPart.CFrame + Vector3.new(0,3,0)
-                        task.wait(0.2)
                         requestDrag:FireServer(item)
                         task.wait(0.1)
                         item:PivotTo(savedPositionMetal * CFrame.new(0,3,0))
@@ -683,7 +679,7 @@ local MetalOff = Tab2:Button({
     Callback = function()
         _G.BringMetal = false
         if savedPositionMetal then
-            hrp.CFrame = savedPositionMetal
+             print("Stop Bring")
         end
     end
 })
@@ -738,11 +734,6 @@ local FoodOn = Tab2:Button({
                 for _, item in ipairs(workspace.Items:GetChildren()) do
                     if not _G.BringFood then break end -- kiểm tra đúng biến
                     if item:IsA("Model") and item.PrimaryPart and targetFood[item.Name] then
-                        -- Tele player tới item
-                        hrp.CFrame = item.PrimaryPart.CFrame + Vector3.new(0,3,0)
-                        task.wait(0.2)
-
-                        -- Bring item về chỗ player lúc bật
                         requestDrag:FireServer(item)
                         task.wait(0.1)
                         item:PivotTo(savedPositionFood * CFrame.new(0,3,0))
@@ -765,7 +756,7 @@ local FoodOff = Tab2:Button({
     Callback = function()
         _G.BringFood = false
         if savedPositionFood then
-            hrp.CFrame = savedPositionFood
+            print("Stop Bring")
         end
     end
 })
@@ -802,8 +793,6 @@ local AmmoOn = Tab2:Button({
                 for _, item in ipairs(workspace.Items:GetChildren()) do
                     if not _G.BringAmmo then break end
                     if item:IsA("Model") and item.PrimaryPart and targetAmmo[item.Name] then
-                        hrp.CFrame = item.PrimaryPart.CFrame + Vector3.new(0,3,0)
-                        task.wait(0.2)
                         requestDrag:FireServer(item)
                         task.wait(0.1)
                         item:PivotTo(savedPositionAmmo * CFrame.new(0,3,0))
@@ -826,7 +815,7 @@ local AmmoOff = Tab2:Button({
     Callback = function()
         _G.BringAmmo = false
         if savedPositionAmmo then
-            hrp.CFrame = savedPositionAmmo
+             print("Stop Bring")
         end
     end
 })
@@ -870,8 +859,6 @@ local ToolsOn = Tab2:Button({
                 for _, item in ipairs(workspace.Items:GetChildren()) do
                     if not _G.BringTools then break end
                     if (item:IsA("Tool") or item:IsA("Model")) and item.PrimaryPart and targetTools[item.Name] then
-                        hrp.CFrame = item.PrimaryPart.CFrame + Vector3.new(0,3,0)
-                        task.wait(0.2)
                         requestDrag:FireServer(item)
                         task.wait(0.1)
                         item:PivotTo(savedPositionTools * CFrame.new(0,3,0))
@@ -894,7 +881,7 @@ local ToolsOff = Tab2:Button({
     Callback = function()
         _G.BringTools = false
         if savedPositionTools then
-            hrp.CFrame = savedPositionTools
+             print("Stop Bring")
         end
     end
 })
@@ -2115,6 +2102,7 @@ end)
 print("[AntiWolfBring] Loaded. Use GUI to enable/disable. Client-side only.")
         end
     })
+
 
 
 
