@@ -695,14 +695,21 @@ local Section = Tab2:Section({
 -- =======================
 local targetFood = {
     ["Steak"] = true,
+	["BBQ Ribs"] = true,
+	["Candy Apple"] = true,
     ["Carrot"] = true,
     ["Berry"] = true,
+	["Cotton Candy"] = true,
     ["Chili"] = true,
+	["Lava Eel"] = true,
+	["Candy Corn"] = true,
     ["Morsel"] = true,
     ["Stew"] = true,
     ["Corn"] = true,
     ["Pumpkin"] = true,
+	["Casserole"] = true,
     ["Apple"] = true,
+	["Berry Juice"] = true,
     ["Ribs"] = true,
     ["Cake"] = true,
     ["Hearty Stew"] = true,
@@ -2102,6 +2109,7 @@ end)
 print("[AntiWolfBring] Loaded. Use GUI to enable/disable. Client-side only.")
         end
     })
+
 
 
 
