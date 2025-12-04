@@ -49,7 +49,7 @@ end)
 
 --Tabs
 local Tab = Window:Tab({
-    Title = "Fram",
+    Title = "Main",
     Icon = "bird",
     Locked = false,
 })
@@ -243,6 +243,24 @@ local Section = Tab:Section({
     Title = "Child",
     TextXAlignment = "Left",
     TextSize = 17, -- Default Size
+})
+
+local Button = Tab:Button({
+    Title = "Open All chest",
+    Desc = "Open all chest on map",
+    Locked = false,
+    Callback = function()
+        local chestFolder = workspace.Items
+local remote = game:GetService("ReplicatedStorage")
+	.RemoteEvents:WaitForChild("RequestOpenItemChest")
+
+for _, v in ipairs(chestFolder:GetChildren()) do
+	if v.Name == "Item Chest" or v.Name == "Item Chest2" or v.Name == "Item Chest3" or v.Name == "Item Chest4" or v.Name == "Item Chest5" or v.Name == "Item Chest6" or v.Name == "Alien Chest" then
+		remote:FireServer(v)
+	end
+end
+
+    end
 })
 
 local Button = Tab:Button({
@@ -2109,6 +2127,7 @@ end)
 print("[AntiWolfBring] Loaded. Use GUI to enable/disable. Client-side only.")
         end
     })
+
 
 
 
