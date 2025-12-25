@@ -20,5 +20,7 @@ InterfaceManager:BuildInterfaceSection(Tabs.Settings)
 SaveManager:BuildConfigSection(Tabs.Settings)
 
 local Tabs = {
-    Main = Window:AddTab({ Title = "Framing", Icon = "" }),
+    Main = Window:AddTab({ Title = "Framing", Icon = "house" }),
+
+    
 }
