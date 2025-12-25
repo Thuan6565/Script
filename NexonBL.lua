@@ -20,7 +20,18 @@ InterfaceManager:BuildInterfaceSection(Tabs.Settings)
 SaveManager:BuildConfigSection(Tabs.Settings)
 
 local Tabs = {
-    Main = Window:AddTab({ Title = "Framing", Icon = "house" }),
+      Main = Window:AddTab({ Title = "Framing", Icon = "house" }),
 
+      Main = Window:AddTab({ Title = "Fruit", Icon = "apple" }),
+    
+      Main = Window:AddTab({ Title = "Visual", Icon = "eye" }),
+      
+      Main = Window:AddTab({ Title = "Automatic", Icon = "omega" }),
+
+      Main = Window:AddTab({ Title = "Event", Icon = "calendars" }),
     
 }
+
+local function CheckQuest()
+
+end
