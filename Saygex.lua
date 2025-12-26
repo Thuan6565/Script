@@ -1,7 +1,7 @@
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 
 local Window = Fluent:CreateWindow({
-    Title = "Saygex Hub-BloxFruit" ,
+    Title = "Saygex Thunder Hub-BloxFruit" ,
     SubTitle = "by Ieyuks8",
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
@@ -2291,7 +2291,7 @@ v23.BorderSizePixel = 0;
 v23.Position = UDim2.new(0.120833337 - 0.1, 0, 0.0952890813 + 0.01, 0);
 v23.Size = UDim2.new(0, 50, 0, 50);
 v23.Draggable = true;
-v23.Image = "http://www.roblox.com/asset/?id=130947856929902";
+v23.Image = "http://www.roblox.com/asset/?id=95051975012611";
 
 v24.Parent = v23;
 v24.CornerRadius = UDim.new(1, 0);
@@ -2480,3 +2480,4 @@ spawn(function()
         end
     end
 end);
+
