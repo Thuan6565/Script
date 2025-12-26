@@ -1,7 +1,7 @@
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 
 local Window = Fluent:CreateWindow({
-    Title = "Saygex Thunder Hub-BloxFruit" ,
+    Title = "Vylixus Saygex Thunder Hub-BloxFruit [ Free nokey ]" ,
     SubTitle = "by Ieyuks8",
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
@@ -2480,4 +2480,5 @@ spawn(function()
         end
     end
 end);
+
 
