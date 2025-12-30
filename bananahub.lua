@@ -720,6 +720,13 @@ function CheckLevel()
             NameMon = "Skull Slayer";
             CFrameQ = CFrame.new(- 16665.19140625, 104.59640502929688, 1579.6943359375);
             CFrameMon = CFrame.new(- 16811.5703125, 84.625244140625, 1542.235107421875);
+       elseif ((v197 == 2600) or (v197 <= 2799) or (SelectMonster == "Sea Chanter") or (v197 == 2800)) then
+            Ms = "Sea Chanter";
+            NameQuest = "SubmergedQuest2";
+            QuestLv = 2;
+            NameMon = "Sea Chanter";
+            CFrameQ = CFrame.new(10883.5986, -2086.88892, 10034.0195);
+            CFrameMon = CFrame.new(10816.8477, -2088.41479, 10082.3506);
         end
     end
 end
@@ -9026,6 +9033,7 @@ spawn(function()
         end
     end
 end);
+
 
 
 
