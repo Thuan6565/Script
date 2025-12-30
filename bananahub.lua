@@ -61,7 +61,7 @@ if (v18 == 2753915549) then
     Sea1 = true;
 elseif (v18 == 4442272183) then
     Sea2 = true;
-elseif (v18 == 7449423635) then
+elseif (v18 == 100117331123089) then
     Sea3 = true;
 else
     game:Shutdown();
@@ -79,7 +79,7 @@ if (v19 == 2753915549) then
     Sea1 = true;
 elseif (v19 == 4442272183) then
     Sea2 = true;
-elseif (v19 == 7449423635) then
+elseif (v19 == 100117331123089) then
     Sea3 = true;
 end
 function CheckLevel()
@@ -9033,6 +9033,7 @@ spawn(function()
         end
     end
 end);
+
 
 
 
