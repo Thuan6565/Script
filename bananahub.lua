@@ -6092,8 +6092,6 @@ spawn(function()
         end);
     end
 end);
-local v89 = require(game.ReplicatedStorage.Util.CameraShaker);
-v89:Stop();
 local v90 = v16.Setting:AddToggle("ToggleBringMob", {
     Title = "Bring Mob",
     Description = "",
@@ -9033,6 +9031,7 @@ spawn(function()
         end
     end
 end);
+
 
 
 
