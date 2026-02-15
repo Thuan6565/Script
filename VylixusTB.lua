@@ -518,18 +518,19 @@ Tabs.Player:AddButton({
     Description = "",
     Callback = function()
 
-        local Players = game:GetService("Players")
+        
+local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 
 local player = Players.LocalPlayer
 
 local tool = Instance.new("Tool")
-tool.Name = "Fly Tool"
+tool.Name = "Stable Fly"
 tool.RequiresHandle = false
 tool.Parent = player:WaitForChild("Backpack")
 
 local flying = false
-local FlyConnection
+local connection
 local bodyVelocity
 local bodyGyro
 local speed = 60
@@ -539,11 +540,8 @@ local function startFly()
 	flying = true
 	
 	local character = player.Character
-	if not character then return end
-	
-	local humanoid = character:FindFirstChildOfClass("Humanoid")
-	local root = character:FindFirstChild("HumanoidRootPart")
-	if not humanoid or not root then return end
+	local humanoid = character:WaitForChild("Humanoid")
+	local root = character:WaitForChild("HumanoidRootPart")
 	
 	bodyVelocity = Instance.new("BodyVelocity")
 	bodyVelocity.MaxForce = Vector3.new(1e9,1e9,1e9)
@@ -554,20 +552,14 @@ local function startFly()
 	bodyGyro.P = 1e4
 	bodyGyro.Parent = root
 	
-	FlyConnection = RunService.Heartbeat:Connect(function()
-		if not flying then return end
+	connection = RunService.Heartbeat:Connect(function()
+		local move = humanoid.MoveDirection
 		
-		local cam = workspace.CurrentCamera
-		local moveDir = humanoid.MoveDirection
-		
-		-- Lấy forward và right của camera nhưng bỏ Y
-		local forward = Vector3.new(cam.CFrame.LookVector.X, 0, cam.CFrame.LookVector.Z).Unit
-		local right = Vector3.new(cam.CFrame.RightVector.X, 0, cam.CFrame.RightVector.Z).Unit
-		
-		local direction = (forward * moveDir.Z + right * moveDir.X)
+		-- Dùng hướng nhân vật thay vì camera
+		local direction = root.CFrame:VectorToWorldSpace(move)
 		
 		bodyVelocity.Velocity = direction * speed
-		bodyGyro.CFrame = CFrame.new(root.Position, root.Position + forward)
+		bodyGyro.CFrame = root.CFrame
 	end)
 	
 	humanoid:ChangeState(Enum.HumanoidStateType.Physics)
@@ -576,21 +568,12 @@ end
 local function stopFly()
 	flying = false
 	
-	if FlyConnection then
-		FlyConnection:Disconnect()
-		FlyConnection = nil
+	if connection then
+		connection:Disconnect()
 	end
 	
 	if bodyVelocity then bodyVelocity:Destroy() end
 	if bodyGyro then bodyGyro:Destroy() end
-	
-	local character = player.Character
-	if character then
-		local humanoid = character:FindFirstChildOfClass("Humanoid")
-		if humanoid then
-			humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
-		end
-	end
 end
 
 tool.Equipped:Connect(startFly)
