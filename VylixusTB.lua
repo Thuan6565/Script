@@ -586,9 +586,31 @@ local function startFly()
     end)
 end
 
-            
 --// Tắt bay
+local function stopFly()
+    flying = false
 
+    if flyConnection then
+        flyConnection:Disconnect()
+        flyConnection = nil
+    end
+
+    if bodyVelocity then
+        if bodyVelocity.Attachment0 then
+            bodyVelocity.Attachment0:Destroy()
+        end
+        bodyVelocity:Destroy()
+        bodyVelocity = nil
+    end
+
+    local char = player.Character
+    if char then
+        local humanoid = char:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
+        end
+    end
+end
 
 --// Khi cầm tool
 tool.Equipped:Connect(function()
