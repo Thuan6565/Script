@@ -693,11 +693,11 @@ end
 local playerlist = GetPlayerNames()
 local chosePlayer = "pl"
 
-local Dropdown = Tab1:Dropdown({
+local Dropdown = Tab5:Dropdown({
     Title = "Select Player",
     Desc = "Choose player in server",
     Values = playerlist,
-    Value = nil,
+    Value = {},
     Multi = false,
     AllowNone = true,
     Callback = function(option)
