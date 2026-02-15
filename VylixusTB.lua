@@ -508,13 +508,21 @@ Tabs.Main:AddButton({
 })
 
 
+Tabs.Player:AddButton({
+    Title = "Fly Gui",
+    Description = "",
+    Callback = function()
+			loadstring(game:HttpGet("https://raw.githubusercontent.com/XNEOFF/FlyGuiV3/main/FlyGuiV3.txt"))()
+			
 
+		end
+	})
 
 
 
 
 Tabs.Player:AddButton({
-    Title = "Fly tool",
+    Title = "Fly tool (can anti tsunami but beta ver)",
     Description = "",
     Callback = function()
 
