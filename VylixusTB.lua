@@ -567,23 +567,52 @@ local function startFly()
 
     flyConnection = RunService.RenderStepped:Connect(function()
 
-        local camera = workspace.CurrentCamera
-        local moveDirection = humanoid.MoveDirection
+    local char = player.Character
+    if not char then return end
 
-        if moveDirection.Magnitude > 0 then
-            
-            local camCF = camera.CFrame
-            local direction =
-                (camCF.LookVector * moveDirection.Z) +
-                (camCF.RightVector * moveDirection.X)
+    local humanoid = char:FindFirstChildOfClass("Humanoid")
+    if not humanoid then return end
 
-            bodyVelocity.VectorVelocity = direction.Unit * flySpeed
+    local hrp = char:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
 
-        else
-            bodyVelocity.VectorVelocity = Vector3.zero
+    local camera = workspace.CurrentCamera
+    local moveDirection = humanoid.MoveDirection
+
+    if moveDirection.Magnitude > 0 then
+        
+        local camCF = camera.CFrame
+
+        -- Lấy hướng ngang của camera (bỏ Y để không sải)
+        local look = Vector3.new(camCF.LookVector.X, 0, camCF.LookVector.Z)
+        local right = Vector3.new(camCF.RightVector.X, 0, camCF.RightVector.Z)
+
+        if look.Magnitude > 0 then
+            look = look.Unit
         end
 
-    end)
+        if right.Magnitude > 0 then
+            right = right.Unit
+        end
+
+        -- Tính hướng bay chuẩn
+        local direction =
+            (look * moveDirection.Z) +
+            (right * moveDirection.X)
+
+        if direction.Magnitude > 0 then
+            direction = direction.Unit
+        end
+
+        -- Bay theo hướng joystick
+        bodyVelocity.VectorVelocity = direction * flySpeed
+
+    else
+        -- Không di chuyển thì đứng yên trên không
+        bodyVelocity.VectorVelocity = Vector3.zero
+    end
+
+end)
 end
 
 --// Tắt bay
