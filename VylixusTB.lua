@@ -519,137 +519,80 @@ Tabs.Player:AddButton({
     Callback = function()
 
         --// Services
-local Players = game:GetService("Players")
+        local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 
 local player = Players.LocalPlayer
 
---// Tạo Tool
+-- Tạo Tool
 local tool = Instance.new("Tool")
 tool.Name = "Fly Tool"
 tool.RequiresHandle = false
 tool.Parent = player:WaitForChild("Backpack")
 
---// Biến fly
 local flying = false
-local flySpeed = 60
-local flyConnection
+local FlyConnection
 local bodyVelocity
+local bodyGyro
+local speed = 60
 
---// Lấy HumanoidRootPart
-local function getHRP()
-    local char = player.Character or player.CharacterAdded:Wait()
-    return char:WaitForChild("HumanoidRootPart")
-end
-
---// Bắt đầu bay
 local function startFly()
-    if flying then return end
-    flying = true
-
-    local char = player.Character or player.CharacterAdded:Wait()
-    local hrp = char:WaitForChild("HumanoidRootPart")
-    local humanoid = char:WaitForChild("Humanoid")
-
-    humanoid:ChangeState(Enum.HumanoidStateType.Physics)
-
-    -- Attachment
-    local attachment = Instance.new("Attachment")
-    attachment.Parent = hrp
-
-    -- LinearVelocity
-    bodyVelocity = Instance.new("LinearVelocity")
-    bodyVelocity.Attachment0 = attachment
-    bodyVelocity.MaxForce = math.huge
-    bodyVelocity.VectorVelocity = Vector3.zero
-    bodyVelocity.RelativeTo = Enum.ActuatorRelativeTo.World
-    bodyVelocity.Parent = hrp
-
-    flyConnection = RunService.RenderStepped:Connect(function()
-
-    local char = player.Character
-    if not char then return end
-
-    local humanoid = char:FindFirstChildOfClass("Humanoid")
-    if not humanoid then return end
-
-    local hrp = char:FindFirstChild("HumanoidRootPart")
-    if not hrp then return end
-
-    local camera = workspace.CurrentCamera
-    local moveDirection = humanoid.MoveDirection
-
-    if moveDirection.Magnitude > 0 then
-        
-        local camCF = camera.CFrame
-
-        -- Lấy hướng ngang của camera (bỏ Y để không sải)
-        local look = Vector3.new(camCF.LookVector.X, 0, camCF.LookVector.Z)
-        local right = Vector3.new(camCF.RightVector.X, 0, camCF.RightVector.Z)
-
-        if look.Magnitude > 0 then
-            look = look.Unit
-        end
-
-        if right.Magnitude > 0 then
-            right = right.Unit
-        end
-
-        -- Tính hướng bay chuẩn
-        local direction =
-            (look * moveDirection.Z) +
-            (right * moveDirection.X)
-
-        if direction.Magnitude > 0 then
-            direction = direction.Unit
-        end
-
-        -- Bay theo hướng joystick
-        bodyVelocity.VectorVelocity = direction * flySpeed
-
-    else
-        -- Không di chuyển thì đứng yên trên không
-        bodyVelocity.VectorVelocity = Vector3.zero
-    end
-
-end)
+	if flying then return end
+	flying = true
+	
+	local character = player.Character
+	if not character then return end
+	
+	local humanoid = character:FindFirstChildOfClass("Humanoid")
+	local root = character:FindFirstChild("HumanoidRootPart")
+	if not humanoid or not root then return end
+	
+	bodyVelocity = Instance.new("BodyVelocity")
+	bodyVelocity.MaxForce = Vector3.new(1e9,1e9,1e9)
+	bodyVelocity.Parent = root
+	
+	bodyGyro = Instance.new("BodyGyro")
+	bodyGyro.MaxTorque = Vector3.new(1e9,1e9,1e9)
+	bodyGyro.P = 1e4
+	bodyGyro.Parent = root
+	
+	FlyConnection = RunService.Heartbeat:Connect(function()
+		if not flying then return end
+		
+		local cam = workspace.CurrentCamera
+		local moveDir = humanoid.MoveDirection
+		
+		local direction = cam.CFrame:VectorToWorldSpace(moveDir)
+		
+		bodyVelocity.Velocity = direction * speed
+		bodyGyro.CFrame = cam.CFrame
+	end)
+	
+	humanoid:ChangeState(Enum.HumanoidStateType.Physics)
 end
 
---// Tắt bay
 local function stopFly()
-    flying = false
-
-    if flyConnection then
-        flyConnection:Disconnect()
-        flyConnection = nil
-    end
-
-    if bodyVelocity then
-        if bodyVelocity.Attachment0 then
-            bodyVelocity.Attachment0:Destroy()
-        end
-        bodyVelocity:Destroy()
-        bodyVelocity = nil
-    end
-
-    local char = player.Character
-    if char then
-        local humanoid = char:FindFirstChildOfClass("Humanoid")
-        if humanoid then
-            humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
-        end
-    end
+	flying = false
+	
+	if FlyConnection then
+		FlyConnection:Disconnect()
+		FlyConnection = nil
+	end
+	
+	if bodyVelocity then bodyVelocity:Destroy() end
+	if bodyGyro then bodyGyro:Destroy() end
+	
+	local character = player.Character
+	if character then
+		local humanoid = character:FindFirstChildOfClass("Humanoid")
+		if humanoid then
+			humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
+		end
+	end
 end
 
---// Khi cầm tool
-tool.Equipped:Connect(function()
-    startFly()
-end)
-
---// Khi bỏ tool
-tool.Unequipped:Connect(function()
-    stopFly()
-end)
+tool.Equipped:Connect(startFly)
+tool.Unequipped:Connect(stopFly)
     end
 })
 
