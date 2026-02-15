@@ -693,7 +693,7 @@ end
 local playerlist = GetPlayerNames()
 local chosePlayer = "pl"
 
-local Dropdown = Tab:Dropdown({
+local Dropdown = Tab1:Dropdown({
     Title = "Select Player",
     Desc = "Choose player in server",
     Values = playerlist,
