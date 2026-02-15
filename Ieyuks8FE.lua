@@ -691,7 +691,7 @@ local function GetPlayerNames()
 end
 
 local playerlist = GetPlayerNames()
-local chosePlayer = "pl"
+local chosePlayer = nil
 
 local Dropdown = Tab5:Dropdown({
     Title = "Select Player",
@@ -701,9 +701,9 @@ local Dropdown = Tab5:Dropdown({
     Multi = false,
     AllowNone = true,
     Callback = function(option)
-        chosePlayer = option
-        print("Selected:", table.concat(option, ", "))
-    end
+    chosePlayer = option
+    print("Selected:", option)
+	end
 })
 
 
