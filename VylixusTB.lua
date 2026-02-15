@@ -518,13 +518,11 @@ Tabs.Player:AddButton({
     Description = "",
     Callback = function()
 
-        --// Services
         local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 
 local player = Players.LocalPlayer
 
--- Tạo Tool
 local tool = Instance.new("Tool")
 tool.Name = "Fly Tool"
 tool.RequiresHandle = false
@@ -562,10 +560,14 @@ local function startFly()
 		local cam = workspace.CurrentCamera
 		local moveDir = humanoid.MoveDirection
 		
-		local direction = cam.CFrame:VectorToWorldSpace(moveDir)
+		-- Lấy forward và right của camera nhưng bỏ Y
+		local forward = Vector3.new(cam.CFrame.LookVector.X, 0, cam.CFrame.LookVector.Z).Unit
+		local right = Vector3.new(cam.CFrame.RightVector.X, 0, cam.CFrame.RightVector.Z).Unit
+		
+		local direction = (forward * moveDir.Z + right * moveDir.X)
 		
 		bodyVelocity.Velocity = direction * speed
-		bodyGyro.CFrame = cam.CFrame
+		bodyGyro.CFrame = CFrame.new(root.Position, root.Position + forward)
 	end)
 	
 	humanoid:ChangeState(Enum.HumanoidStateType.Physics)
