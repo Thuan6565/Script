@@ -563,12 +563,18 @@ local function startFly()
     local hrp = getHRP()
 
     local moveDirection = humanoid.MoveDirection
+    local camera = workspace.CurrentCamera
 
-    if moveDirection.Magnitude > 0 then
-        bodyVelocity.Velocity = moveDirection.Unit * flySpeed
-    else
-        bodyVelocity.Velocity = Vector3.zero
+    local direction = moveDirection
+
+    if direction.Magnitude > 0 then
+        direction = direction.Unit
     end
+
+    -- Thêm lực bay lên nhẹ để không rơi
+    local upwardForce = Vector3.new(0, 1, 0)
+
+    bodyVelocity.Velocity = (direction * flySpeed) + (upwardForce * flySpeed * 0.5)
 end)
 end
 
