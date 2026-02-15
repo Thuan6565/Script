@@ -554,28 +554,22 @@ local function startFly()
     bodyVelocity.Parent = hrp
 
     flyConnection = RunService.RenderStepped:Connect(function()
-        local char = player.Character
-        if not char then return end
-        
-        local humanoid = char:FindFirstChildOfClass("Humanoid")
-        if not humanoid then return end
-        
-        local hrp = getHRP()
-        local camera = workspace.CurrentCamera
-        local camCF = camera.CFrame
-        
-        local moveDirection = humanoid.MoveDirection
-        
-        local direction =
-            (camCF.LookVector * moveDirection.Z) +
-            (camCF.RightVector * moveDirection.X)
+    local char = player.Character
+    if not char then return end
 
-        if direction.Magnitude > 0 then
-            direction = direction.Unit
-        end
+    local humanoid = char:FindFirstChildOfClass("Humanoid")
+    if not humanoid then return end
 
-        bodyVelocity.Velocity = direction * flySpeed
-    end)
+    local hrp = getHRP()
+
+    local moveDirection = humanoid.MoveDirection
+
+    if moveDirection.Magnitude > 0 then
+        bodyVelocity.Velocity = moveDirection.Unit * flySpeed
+    else
+        bodyVelocity.Velocity = Vector3.zero
+    end
+end)
 end
 
 --// Tắt bay
